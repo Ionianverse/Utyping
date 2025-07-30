@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utyping: Space Typing Adventure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Utyping 🚀</h1>
+        <p>Embark on your Universe Typing Journey!</p>
+    </header>
+    <section id="typing-game">
+        <div id="tier-badge">
+            <span id="tier">Mercury Novice</span>
+        </div>
+        <div id="level-progress">
+            <progress id="progress-bar" max="100" value="0"></progress>
+            <span id="level-info">Level 1</span>
+        </div>
+        <div id="challenge-text">
+            <span id="text-to-type">Loading...</span>
+        </div>
+        <input type="text" id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus>
+        <div id="stats">
+            <span>Speed: <span id="wpm">0</span> WPM</span>
+            <span>Accuracy: <span id="accuracy">100</span>%</span>
+        </div>
+        <button id="next-btn" style="display:none;">Next Challenge</button>
+    </section>
+    <footer>
+        <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
 
