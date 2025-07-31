@@ -1,6 +1,8 @@
 /* Reset & base */
-* {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* Best practice: include pseudo-elements */
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -56,11 +58,15 @@ header p {
   color: #fff;
   border-color: #5692e8;
 }
+.tab-btn:focus-visible {
+  outline: 3px solid #3775c6;
+  outline-offset: 2px;
+}
 
 /* Typing Game Section */
 #typing-game {
   background: #fff;
-  border-radius: 18px;
+  border-radius: 1.125rem; /* 18px */
   padding: 1.8rem 2rem 2.2rem 2rem;
   margin-bottom: 1rem;
   width: 100%;
@@ -121,6 +127,10 @@ progress::-webkit-progress-value {
   background: #58c58f;
   border-radius: 10px;
 }
+progress::-moz-progress-bar {
+  background: #58c58f;
+  border-radius: 10px;
+}
 
 #level-info {
   color: #3775c6;
@@ -154,9 +164,15 @@ progress::-webkit-progress-value {
   min-height: 90px;
   resize: none;
   margin-bottom: 0.5rem;
+  overflow-y: auto; /* Added for better scrolling behavior */
 }
 #typing-input:focus {
   border-color: #5692e8;
+}
+
+#typing-input:focus-visible {
+  outline: 3px solid #3775c6;
+  outline-offset: 2px;
 }
 
 #stats {
@@ -188,6 +204,10 @@ progress::-webkit-progress-value {
 }
 #next-btn:active {
   background: #5692e8;
+}
+#next-btn:focus-visible {
+  outline: 3px solid #3775c6;
+  outline-offset: 2px;
 }
 
 /* User Stats Dashboard */
@@ -251,7 +271,7 @@ footer {
   margin-bottom: 1.3rem;
 }
 .popup-hide {
-  display: none !important;
+  display: none !important; /* If you want fade transitions, consider toggling visibility & opacity instead */
 }
 #close-popup {
   background: #5692e8;
@@ -264,10 +284,17 @@ footer {
   cursor: pointer;
   transition: background 0.2s;
 }
-#close-popup:hover {
+#close-popup:hover,
+#close-popup:focus-visible {
   background: #58c58f;
+  outline: none;
+}
+#close-popup:focus-visible {
+  outline: 3px solid #3775c6;
+  outline-offset: 2px;
 }
 
+/* Responsive */
 @media (max-width: 750px) {
   #typing-game,
   #user-stats {
@@ -276,8 +303,16 @@ footer {
   header h1 {
     font-size: 2rem;
   }
+  #typing-input {
+    font-size: 1rem;
+  }
+  #next-btn {
+    font-size: 1rem;
+    padding: 0.6rem;
+  }
 }
 
+/* Background stars */
 .stars-bg {
   position: fixed;
   z-index: 0;
@@ -288,6 +323,7 @@ footer {
   animation: starsMove 30s linear infinite alternate;
 }
 @keyframes starsMove {
-  to {background-position: 120px 40px;}
+  to {
+    background-position: 120px 40px;
+  }
 }
-
