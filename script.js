@@ -2,7 +2,7 @@
 const THEMES = {
   space: {
     display: "Universe/Space",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Solar_sys.jpg/320px-Solar_sys.jpg",
+    image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=400&q=80",
     file: "space.txt"
   },
   general: {
@@ -12,22 +12,22 @@ const THEMES = {
   },
   science: {
     display: "Science",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/DNA_double_helix_horizontal.png/400px-DNA_double_helix_horizontal.png",
+    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
     file: "science.txt"
   },
   biology: {
     display: "Biology",
-    image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Biological_cell.svg",
+    image: "https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=400&q=80",
     file: "biology.txt"
   },
   engineering: {
     display: "Engineering",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Gears_animation.gif/340px-Gears_animation.gif",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80",
     file: "engineering.txt"
   },
   ai: {
     display: "AI & Technology",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Brain_network.svg/400px-Brain_network.svg.png",
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80",
     file: "ai.txt"
   }
 };
@@ -262,7 +262,6 @@ function hidePopup() {
 input.addEventListener("input", checkInput);
 
 input.addEventListener("keydown", function(evt){
-  // When Enter pressed on completed text, show popup (prevent newline)
   if (evt.key === "Enter" && input.value === currentParagraph) {
     evt.preventDefault();
     showPopup();
