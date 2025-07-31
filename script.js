@@ -1,357 +1,199 @@
-const THEME_SOUNDS = {
-  space: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12c82c6b54.mp3',
-  general: 'https://cdn.pixabay.com/audio/2022/12/19/audio_12c28e7ff4.mp3',
-  science: 'https://cdn.pixabay.com/audio/2022/06/12/audio_12c1d8317c.mp3',
-  biology: 'https://cdn.pixabay.com/audio/2022/11/16/audio_12e6e3387d.mp3',
-  engineering: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12c83f28e1.mp3',
-  ai: 'https://cdn.pixabay.com/audio/2022/11/16/audio_12e6e338f6.mp3'
-};
+// Grab all needed elements
+const typingInput = document.getElementById('typing-input');
+const textToTypeElem = document.getElementById('text-to-type');
+const wpmElem = document.getElementById('wpm');
+const accuracyElem = document.getElementById('accuracy');
+const completedElem = document.getElementById('completed');
+const bestWpmElem = document.getElementById('best-wpm');
+const avgWpmElem = document.getElementById('avg-wpm');
+const bestAccuracyElem = document.getElementById('best-accuracy');
+const nextBtn = document.getElementById('next-btn');
+const popupContainer = document.getElementById('popup-container');
+const popupStats = document.getElementById('popup-stats');
+const closePopupBtn = document.getElementById('close-popup');
+const practiceTimeSelect = document.getElementById('practice-time-select');
 
-const THEMES = {
-  space: { display: "Universe/Space", image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=400&q=80", file: "space.txt" },
-  general: { display: "General", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80", file: "general.txt" },
-  science: { display: "Science", image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80", file: "science.txt" },
-  biology: { display: "Biology", image: "https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=400&q=80", file: "biology.txt" },
-  engineering: { display: "Engineering", image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80", file: "engineering.txt" },
-  ai: { display: "AI & Technology", image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80", file: "ai.txt" }
-};
+let timerId = null;
+let timeLeft = 0;
+let totalTime = 0;
+let startTime = 0;
 
-const get = id => document.getElementById(id);
-const textToTypeElement = get("text-to-type");
-const input = get("typing-input");
-const wpmDisplay = get("wpm");
-const accuracyDisplay = get("accuracy");
-const tierBadge = get("tier");
-const progressBar = get("progress-bar");
-const levelInfo = get("level-info");
-const nextBtn = get("next-btn");
-const themeImage = get("theme-image");
-const completedDisplay = get("completed");
-const bestWPMDisplay = get("best-wpm");
-const avgWPMDisplay = get("avg-wpm");
-const bestAccuracyDisplay = get("best-accuracy");
-const popupContainer = get("popup-container");
-const popupStats = get("popup-stats");
-const closePopupBtn = get("close-popup");
+let currentText = ''; // the current text to type, can be updated dynamically
+let completedParagraphs = 0;
 
-const timeSelect = get('practice-time-select');  // New: select dropdown element
+let bestWpm = 0;
+let totalWpmSum = 0;
+let totalTests = 0;
+let bestAccuracy = 0;
 
-let allItems = [];
-let currentTheme = "space";
-
-let currentLevel = 1;
-let tier = null;
-let currentParagraph = "";
-let startTime = null;
-let totalTyped = 0;
-let totalErrors = 0;
-let showFeedback = false;
-
-// --- Timer related variables ---
-let timer = null;
-let timeLeft = 0; // seconds
-
-let stats = {
-  completed: 0,
-  totalWPM: 0,
-  totalAccuracy: 0,
-  bestWPM: 0,
-  bestAccuracy: 0
-};
-
-const tiers = [
-  {name: "Mercury Novice", minLevel: 1, color: "#ffcc32"},
-  {name: "Venus Voyager", minLevel: 4, color: "#fca982"},
-  {name: "Mars Explorer", minLevel: 8, color: "#f94d56"},
-  {name: "Jupiter Captain", minLevel: 16, color: "#29b4dd"},
-  {name: "Saturn Navigator", minLevel: 25, color: "#b18dbe"},
-  {name: "Neptune Commander", minLevel: 40, color: "#8eacf3"},
-  {name: "Galactic Legend", minLevel: 60, color: "#6ff2f0"}
-];
-
-// --- Load theme paragraphs ---
-async function loadThemeItems(themeKey) {
-  const theme = THEMES[themeKey];
-  themeImage.innerHTML = theme.image ? `<img src="${theme.image}" alt="${theme.display}">` : "";
-
-  try {
-    const response = await fetch(theme.file + "?v=" + Date.now());
-    if (!response.ok) throw new Error(`Failed to load ${theme.file}`);
-    const text = await response.text();
-    allItems = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
-    if (allItems.length === 0) allItems = ["No content found! Please add paragraphs to the file."];
-  } catch (error) {
-    allItems = ["Error loading paragraphs. Please check the content files."];
-    console.error(error);
-  }
-
-  startNewChallenge();
+// Insert or load initial text to type (you should replace this with your real source)
+function loadText() {
+  // Example static text; replace or improve as needed
+  currentText = 'The quick brown fox jumps over the lazy dog.';
+  textToTypeElem.textContent = currentText;
 }
 
-function pickParagraph() {
-  return allItems[Math.floor(Math.random() * allItems.length)];
-}
+// Calculate WPM and accuracy based on user input
+function calculateResults() {
+  const typedText = typingInput.value;
+  const typedWords = typedText.trim().split(/\s+/).filter(Boolean);
+  const originalWords = currentText.trim().split(/\s+/);
 
-function updateTier() {
-  for (let i = tiers.length - 1; i >= 0; i--) {
-    if (currentLevel >= tiers[i].minLevel) {
-      if (!tier || tier.name !== tiers[i].name) {
-        showTierMessage(tiers[i].name, tiers[i].color);
-      }
-      tier = tiers[i];
-      break;
+  // Calculate correct words count
+  let correctWords = 0;
+  for (let i = 0; i < typedWords.length; i++) {
+    if (typedWords[i] === originalWords[i]) {
+      correctWords++;
     }
   }
-  tierBadge.textContent = tier.name;
-  tierBadge.style.color = tier.color;
-}
 
-function showTierMessage(name, color) {
-  const msg = document.createElement('div');
-  msg.textContent = `🚀 Tier Up! Welcome to: ${name}`;
-  msg.style.background = color;
-  msg.style.color = "#fff";
-  msg.style.position = "fixed";
-  msg.style.top = "18%";
-  msg.style.left = "50%";
-  msg.style.padding = "1.3rem 2rem";
-  msg.style.borderRadius = "2rem";
-  msg.style.fontSize = "1.13rem";
-  msg.style.fontWeight = "bold";
-  msg.style.boxShadow = "0 0 44px #a3d3fa";
-  msg.style.transform = "translate(-50%, -50%) scale(1.1)";
-  msg.style.zIndex = "1001";
-  document.body.appendChild(msg);
-  setTimeout(() => msg.remove(), 1800);
-}
-
-// New Timer functions -----------------
-
-function clearTimer() {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
+  // Calculate accuracy percentage: characters correct / total typed characters
+  const totalCharsTyped = typedText.length;
+  let correctChars = 0;
+  for (let i = 0; i < typedText.length; i++) {
+    if (typedText[i] === currentText[i]) {
+      correctChars++;
+    }
   }
-  timeLeft = 0;
+  const accuracy = totalCharsTyped > 0 ? Math.round((correctChars / totalCharsTyped) * 100) : 100;
+
+  // Calculate WPM - words per minute (based on totalTime in minutes)
+  const timeSpent = (Date.now() - startTime) / 1000 / 60; // minutes
+  const wpm = timeSpent > 0 ? Math.round(correctWords / timeSpent) : 0;
+
+  return { wpm, accuracy };
 }
 
-function formatTime(sec) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
+// Update stats display during typing
+function updateStats() {
+  const { wpm, accuracy } = calculateResults();
+  wpmElem.textContent = wpm;
+  accuracyElem.textContent = accuracy;
 }
 
-function startTimer() {
-  if (timer) return; // timer already running
-  const selectedMinutes = parseInt(timeSelect.value, 10);
-  if (!selectedMinutes || selectedMinutes <= 0) {
-    levelInfo.textContent = `Level ${currentLevel}`; // reset text if no timer
-    return;
-  }
-  timeLeft = selectedMinutes * 60;
+// Timer countdown function
+function startTimer(duration) {
+  if (timerId) clearInterval(timerId);
 
-  levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(timeLeft)}`;
-  timer = setInterval(() => {
+  timeLeft = duration;
+  totalTime = duration;
+  startTime = Date.now();
+
+  updateTimerDisplay();
+
+  timerId = setInterval(() => {
     timeLeft--;
-    if (timeLeft < 0) timeLeft = 0;
-    levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(timeLeft)}`;
+    updateTimerDisplay();
 
     if (timeLeft <= 0) {
-      clearTimer();
-      endSessionDueToTimeout();
+      clearInterval(timerId);
+      endTest();
     }
   }, 1000);
 }
 
-function endSessionDueToTimeout() {
-  input.disabled = true;
-  showFeedback = true;
-  showPopup(true);
+function updateTimerDisplay() {
+  // Add or update timer display in your UI
+  let timerDisplay = document.getElementById('timer-display');
+  if (!timerDisplay) {
+    timerDisplay = document.createElement('div');
+    timerDisplay.id = 'timer-display';
+    timerDisplay.style.fontSize = '20px';
+    timerDisplay.style.marginBottom = '1rem';
+    timerDisplay.style.textAlign = 'center';
+    // Insert timer display on top of typing game
+    const mainSection = document.getElementById('typing-game');
+    mainSection.insertBefore(timerDisplay, mainSection.firstChild);
+  }
+  timerDisplay.textContent = `Time Left: ${timeLeft}s`;
 }
 
-// Existing functionality -------------------
+function endTest() {
+  typingInput.disabled = true;
+  nextBtn.style.display = 'inline-block';
 
-function startNewChallenge() {
-  clearTimer(); // <- Clear timer on new challenge
-  currentParagraph = pickParagraph();
-  textToTypeElement.textContent = currentParagraph;
-  input.value = "";
-  input.disabled = false;
-  input.focus();
-  startTime = null;
-  totalTyped = 0;
-  totalErrors = 0;
-  wpmDisplay.textContent = "0";
-  accuracyDisplay.textContent = "100";
-  progressBar.value = 0;
-  levelInfo.textContent = `Level ${currentLevel}`;
-  nextBtn.style.display = "none";
-  showFeedback = false;
-}
+  const { wpm, accuracy } = calculateResults();
 
-function updateStatsDisplay() {
-  completedDisplay.textContent = stats.completed;
-  bestWPMDisplay.textContent = stats.bestWPM;
-  avgWPMDisplay.textContent = stats.completed === 0 ? 0 : Math.round(stats.totalWPM / stats.completed);
-  bestAccuracyDisplay.textContent = stats.bestAccuracy + "%";
-}
+  // Update best and average stats
+  totalTests++;
+  totalWpmSum += wpm;
+  bestWpm = Math.max(bestWpm, wpm);
+  bestAccuracy = Math.max(bestAccuracy, accuracy);
 
-function calculateStats() {
-  if (!startTime) return {wpm: 0, accuracy: 100};
-  const now = new Date();
-  const timeInMinutes = (now - startTime) / 1000 / 60;
-  const chars = input.value.length;
-  const wordsTyped = chars / 5;
-  const wpm = Math.round(wordsTyped / (timeInMinutes || 1e-3));
-  const accuracy = chars === 0 ? 100 : Math.max(0, Math.round(((chars - totalErrors) / chars) * 100));
-  wpmDisplay.textContent = isFinite(wpm) && wpm > 0 ? wpm : 0;
-  accuracyDisplay.textContent = accuracy;
-  return {wpm, accuracy};
-}
+  completedParagraphs++;
 
-function checkInput(evt) {
-  const typed = input.value;
-  if (!startTime && typed.length) {
-    startTime = new Date();
-    startTimer(); // Start timer on first key press
-  }
+  completedElem.textContent = completedParagraphs;
+  bestWpmElem.textContent = bestWpm;
+  avgWpmElem.textContent = Math.round(totalWpmSum / totalTests);
+  bestAccuracyElem.textContent = bestAccuracy + '%';
 
-  totalTyped = typed.length;
-  totalErrors = 0;
-
-  for (let i = 0; i < typed.length; i++) {
-    if (typed[i] !== currentParagraph[i]) totalErrors++;
-  }
-
-  calculateStats();
-
-  progressBar.value = Math.min((typed.length / currentParagraph.length) * 100, 100);
-
-  if (typed === currentParagraph && !showFeedback) {
-    input.disabled = true;
-    showFeedback = true;
-    clearTimer();
-    setTimeout(() => showPopup(false), 180);
-  }
-}
-
-function showPopup(timeout = false) {
-  if (THEME_SOUNDS[currentTheme]) {
-    const audio = new Audio(THEME_SOUNDS[currentTheme]);
-    audio.play();
-  }
-  clearTimer();
-
-  const {wpm, accuracy} = calculateStats();
-
-  stats.completed += 1;
-  stats.totalWPM += wpm;
-  stats.totalAccuracy += accuracy;
-  if (wpm > stats.bestWPM) stats.bestWPM = wpm;
-  if (accuracy > stats.bestAccuracy) stats.bestAccuracy = accuracy;
-  updateStatsDisplay();
-
-  let feedbackText = "";
-  if (timeout) {
-    feedbackText = "Time's up! Great effort—keep practicing! ⏰";
-  } else {
-    if (wpm > 80 && accuracy >= 98) feedbackText = "Blazing fast and super accurate! 🚀";
-    else if (wpm > 60 && accuracy >= 95) feedbackText = "Fast fingers and sharp focus! 💡";
-    else if (wpm > 40) feedbackText = "Great speed—keep pushing for more! 🔥";
-    else if (accuracy < 85) feedbackText = "Try to slow down and focus on accuracy! 🎯";
-    else feedbackText = "Solid! Practice daily for mastery. 🌱";
-  }
-
+  // Show popup with results
   popupStats.innerHTML = `
-    <ul style="text-align:left; line-height:1.7; margin-bottom:0.9rem;">
-      <li><strong>WPM:</strong> ${wpm}</li>
-      <li><strong>Accuracy:</strong> ${accuracy}%</li>
-      <li><strong>Paragraph Completed:</strong> ${stats.completed}</li>
-      <li><strong>Tier:</strong> ${tier.name}</li>
-      <li><strong>Level:</strong> ${currentLevel}</li>
-      ${timeout ? '<li><strong>Session ended due to time limit</strong></li>' : ''}
-    </ul>
-    <span style="font-size:1.01rem; color:#5692e8; font-weight:600;">${feedbackText}</span>
+    <p>Your WPM: <strong>${wpm}</strong></p>
+    <p>Your Accuracy: <strong>${accuracy}%</strong></p>
   `;
-
   popupContainer.classList.remove('popup-hide');
+  popupContainer.focus();
+}
 
-  document.onkeydown = function(evt) {
-    if (evt.key === "Enter") {
-      evt.preventDefault();
-      closePopupBtn.click();
-    }
+function resetTest() {
+  typingInput.disabled = false;
+  typingInput.value = '';
+  wpmElem.textContent = '0';
+  accuracyElem.textContent = '100';
+  nextBtn.style.display = 'none';
+
+  loadText();
+
+  // Remove timer display if exists
+  const timerDisplay = document.getElementById('timer-display');
+  if (timerDisplay) {
+    timerDisplay.remove();
   }
 }
 
-function hidePopup() {
+function startTest() {
+  resetTest();
+
+  const selectedMinutes = Number(practiceTimeSelect.value);
+
+  if (selectedMinutes > 0) {
+    startTimer(selectedMinutes * 60);
+  } else {
+    // No timer selected, so just enable typing but no countdown
+    typingInput.focus();
+  }
+}
+
+// Event listeners
+
+// When user types, update stats live if timer running or no timer
+typingInput.addEventListener('input', () => {
+  if (!typingInput.disabled) {
+    updateStats();
+  }
+});
+
+// When practice time selection changes, start or reset test accordingly
+practiceTimeSelect.addEventListener('change', () => {
+  startTest();
+});
+
+// Handle Next Challenge button click - here just restarting the test for now
+nextBtn.addEventListener('click', () => {
+  startTest();
   popupContainer.classList.add('popup-hide');
-  document.onkeydown = null;
-  currentLevel++;
-  updateTier();
-  startNewChallenge();
-}
-
-input.addEventListener("input", checkInput);
-
-input.addEventListener("keydown", function(evt){
-  if (evt.key === "Enter") {
-    evt.preventDefault();
-    if (input.value === currentParagraph && !showFeedback) {
-      showPopup(false);
-    }
-  }
 });
 
-nextBtn.addEventListener("click", () => {
-  currentLevel++;
-  updateTier();
-  startNewChallenge();
-});
-closePopupBtn.addEventListener("click", hidePopup);
-
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedTheme = btn.getAttribute('data-theme');
-    if (selectedTheme === currentTheme) return;
-
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.toggle('active', b === btn);
-      b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
-      b.tabIndex = b === btn ? 0 : -1;
-    });
-
-    currentTheme = selectedTheme;
-    switchTheme(currentTheme);
-    loadThemeItems(currentTheme);
-  });
+// Close popup continue button
+closePopupBtn.addEventListener('click', () => {
+  popupContainer.classList.add('popup-hide');
+  typingInput.focus();
 });
 
-function switchTheme(newTheme) {
-  const themeBackgrounds = {
-    space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-    general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-    science: "linear-gradient(135deg, #1f2f45 0%, #3a3a68 100%), url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-    biology: "linear-gradient(135deg, #234c3c 0%, #a1eac9 100%), url('https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-    engineering: "linear-gradient(135deg, #181b2d 0%, #3f4277 100%), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-    ai: "linear-gradient(135deg, #00061a 0%, #abb3ce 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed"
-  };
-  document.body.style.background = themeBackgrounds[newTheme] || "";
-}
+// Initial load
+loadText();
+typingInput.disabled = true;  // Disable input on initial load until user selects time
 
-window.addEventListener("keydown", evt => {
-  if (evt.ctrlKey && evt.shiftKey && evt.key.toLowerCase() === "r") {
-    localStorage.removeItem('stats_v2');
-    stats = {completed: 0, totalWPM: 0, totalAccuracy: 0, bestWPM: 0, bestAccuracy: 0};
-    updateStatsDisplay();
-    currentLevel = 1;
-    updateTier();
-    startNewChallenge();
-    alert("Stats and progress reset!");
-  }
-});
-
-switchTheme(currentTheme);
-updateTier();
-updateStatsDisplay();
-loadThemeItems(currentTheme);
+// Optionally, if you want to start immediately without user selection:
+// startTest();
