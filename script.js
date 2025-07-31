@@ -34,7 +34,8 @@ const popupContainer = get("popup-container");
 const popupStats = get("popup-stats");
 const closePopupBtn = get("close-popup");
 
-const timeSelect = get('practice-time-select');  // New: select dropdown element
+// NEW: time selection dropdown element
+const timeSelect = get('practice-time-select');
 
 let allItems = [];
 let currentTheme = "space";
@@ -47,7 +48,7 @@ let totalTyped = 0;
 let totalErrors = 0;
 let showFeedback = false;
 
-// --- Timer related variables ---
+// --- Timer variables ---
 let timer = null;
 let timeLeft = 0; // seconds
 
@@ -69,7 +70,7 @@ const tiers = [
   {name: "Galactic Legend", minLevel: 60, color: "#6ff2f0"}
 ];
 
-// --- Load theme paragraphs ---
+// --- Load paragraphs function ---
 async function loadThemeItems(themeKey) {
   const theme = THEMES[themeKey];
   themeImage.innerHTML = theme.image ? `<img src="${theme.image}" alt="${theme.display}">` : "";
@@ -125,8 +126,7 @@ function showTierMessage(name, color) {
   setTimeout(() => msg.remove(), 1800);
 }
 
-// New Timer functions -----------------
-
+// --- Timer functions ---
 function clearTimer() {
   if (timer) {
     clearInterval(timer);
@@ -141,15 +141,15 @@ function formatTime(sec) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+// Start the timer according to user selection
 function startTimer() {
   if (timer) return; // timer already running
-  const selectedMinutes = parseInt(timeSelect.value, 10);
+  const selectedMinutes = parseInt(timeSelect?.value || "0", 10);
   if (!selectedMinutes || selectedMinutes <= 0) {
-    levelInfo.textContent = `Level ${currentLevel}`; // reset text if no timer
+    levelInfo.textContent = `Level ${currentLevel}`; // reset if no timer
     return;
   }
   timeLeft = selectedMinutes * 60;
-
   levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(timeLeft)}`;
   timer = setInterval(() => {
     timeLeft--;
@@ -163,16 +163,16 @@ function startTimer() {
   }, 1000);
 }
 
+// Called when timer hits zero
 function endSessionDueToTimeout() {
   input.disabled = true;
   showFeedback = true;
-  showPopup(true);
+  showPopup(true); // show popup with timeout message
 }
 
-// Existing functionality -------------------
-
+// --- Main game flow functions ---
 function startNewChallenge() {
-  clearTimer(); // <- Clear timer on new challenge
+  clearTimer(); // clear timer on new challenge
   currentParagraph = pickParagraph();
   textToTypeElement.textContent = currentParagraph;
   input.value = "";
@@ -209,11 +209,12 @@ function calculateStats() {
   return {wpm, accuracy};
 }
 
+// Check user input on each input event
 function checkInput(evt) {
   const typed = input.value;
   if (!startTime && typed.length) {
     startTime = new Date();
-    startTimer(); // Start timer on first key press
+    startTimer(); // START TIMER here on first key press
   }
 
   totalTyped = typed.length;
@@ -235,6 +236,7 @@ function checkInput(evt) {
   }
 }
 
+// Show popup with optional timeout flag to adjust feedback text
 function showPopup(timeout = false) {
   if (THEME_SOUNDS[currentTheme]) {
     const audio = new Audio(THEME_SOUNDS[currentTheme]);
@@ -292,6 +294,7 @@ function hidePopup() {
   startNewChallenge();
 }
 
+// --- Event listeners ---
 input.addEventListener("input", checkInput);
 
 input.addEventListener("keydown", function(evt){
@@ -351,6 +354,7 @@ window.addEventListener("keydown", evt => {
   }
 });
 
+// Initialize
 switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
