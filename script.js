@@ -62,13 +62,14 @@ let totalTyped = 0;
 let totalErrors = 0;
 let showFeedback = false;
 
-let stats = JSON.parse(localStorage.getItem('stats_v2')) || {
+let stats = {
   completed: 0,
   totalWPM: 0,
   totalAccuracy: 0,
   bestWPM: 0,
   bestAccuracy: 0
 };
+
 
 const tiers = [
   {name: "Mercury Novice", minLevel: 1, color: "#ffcc32"},
