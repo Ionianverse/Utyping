@@ -297,14 +297,15 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // --- Switch theme, load contents, update UI ---
 function switchTheme(newTheme) {
   const themeBackgrounds = {
-  space: "linear-gradient(135deg, #e6efff 0%, #fafcff 100%) url('https://cdn.pixabay.com/photo/2016/12/05/17/20/space-1882394_1280.jpg') center/cover fixed",
-  general: "linear-gradient(135deg, #fff4dd 0%, #ffffff 100%) url('https://cdn.pixabay.com/photo/2016/11/29/06/16/book-1868068_1280.jpg') center/cover fixed",
-  science: "linear-gradient(135deg, #e2ffe6 0%, #eefaff 100%) url('https://cdn.pixabay.com/photo/2017/02/01/22/02/science-2038437_1280.jpg') center/cover fixed",
-  biology: "linear-gradient(135deg, #eafff3 0%, #fffef1 100%) url('https://cdn.pixabay.com/photo/2017/07/20/17/58/dna-2524189_1280.jpg') center/cover fixed",
-  engineering: "linear-gradient(135deg, #f1eaff 0%, #eefaff 100%) url('https://cdn.pixabay.com/photo/2016/11/21/16/23/gears-1843105_1280.jpg') center/cover fixed",
-  ai: "linear-gradient(135deg, #f0f0ff 0%, #f5fff9 100%) url('https://cdn.pixabay.com/photo/2017/01/30/12/52/artificial-intelligence-2025789_1280.jpg') center/cover fixed"
+  space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+  general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+  science: "linear-gradient(135deg, #1f2f45 0%, #3a3a68 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+  biology: "linear-gradient(135deg, #234c3c 0%, #a1eac9 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+  engineering: "linear-gradient(135deg, #181b2d 0%, #3f4277 100%), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+  ai: "linear-gradient(135deg, #00061a 0%, #abb3ce 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed"
 };
 document.body.style.background = themeBackgrounds[newTheme] || "";
+
 
 }
 
