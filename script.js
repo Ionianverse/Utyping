@@ -326,3 +326,21 @@ switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
 startNewChallenge();
+
+
+.animated-bg-icons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 1rem;
+  pointer-events: none;
+}
+.animated-bg-icons img {
+  width: 80px; height: auto;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite alternate;
+}
+@keyframes float {
+  from { transform: translateY(0);}
+  to { transform: translateY(-18px);}
+}
