@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Utyping: Typing Adventure</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <h1>Utyping 🚀</h1>
     <p>Explore Typing with Space, Science, and More!</p>
   </header>
+
   <section id="tabs">
     <button class="tab-btn active" data-theme="space">Universe/Space</button>
     <button class="tab-btn" data-theme="general">General</button>
@@ -19,26 +20,41 @@
     <button class="tab-btn" data-theme="engineering">Engineering</button>
     <button class="tab-btn" data-theme="ai">AI & Technology</button>
   </section>
+
   <section id="typing-game">
-    <div id="theme-image"></div>
+    <div id="theme-image" aria-label="Theme Image"></div>
+
     <div id="tier-badge">
       <span id="tier">Tier</span>
     </div>
+
     <div id="level-progress">
       <progress id="progress-bar" max="100" value="0"></progress>
       <span id="level-info">Level 1</span>
     </div>
-    <div id="challenge-text">
+
+    <div id="challenge-text" aria-live="polite">
       <span id="text-to-type">Loading...</span>
     </div>
-    <textarea id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus rows="4"></textarea>
-    <div id="stats">
+
+    <textarea
+      id="typing-input"
+      placeholder="Start typing here..."
+      autocomplete="off"
+      autofocus
+      rows="4"
+      aria-label="Typing input"
+    ></textarea>
+
+    <div id="stats" aria-live="polite">
       <span>WPM: <span id="wpm">0</span></span>
       <span>Accuracy: <span id="accuracy">100</span>%</span>
     </div>
+
     <button id="next-btn" style="display:none;">Next Challenge</button>
   </section>
-  <section id="user-stats">
+
+  <section id="user-stats" aria-live="polite">
     <h2>Your Typing Stats</h2>
     <div>Paragraphs Completed: <span id="completed">0</span></div>
     <div>Best WPM: <span id="best-wpm">0</span></div>
@@ -47,17 +63,18 @@
   </section>
 
   <!-- Popup Modal for Typing Feedback -->
-  <div id="popup-container" class="popup-hide">
+  <div id="popup-container" class="popup-hide" role="dialog" aria-modal="true" aria-labelledby="popup-title" tabindex="-1">
     <div id="popup">
-      <h3>Great job! Typing Complete 🎉</h3>
+      <h3 id="popup-title">Great job! Typing Complete 🎉</h3>
       <div id="popup-stats"></div>
-      <button id="close-popup">Continue</button>
+      <button id="close-popup" aria-label="Close popup and continue">Continue</button>
     </div>
   </div>
 
   <footer>
     <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
   </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
