@@ -1,11 +1,4 @@
-
-/* Reset & base */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 body {
     background: radial-gradient(ellipse at center, #0a0f2c 0%, #000000 100%);
@@ -17,36 +10,23 @@ body {
     padding: 2rem;
 }
 
-/* Header */
 header {
     text-align: center;
     margin-bottom: 2rem;
     user-select: none;
 }
+header h1 { font-size: 3rem; color: #ffcb05; text-shadow: 0 0 15px #ffcb05; }
+header p { font-size: 1.2rem; color: #a0a8e0; margin-top: 0.3rem; }
 
-header h1 {
-    font-size: 3rem;
-    color: #ffcb05;
-    text-shadow: 0 0 15px #ffcb05;
-}
-
-header p {
-    font-size: 1.2rem;
-    color: #a0a8e0;
-    margin-top: 0.3rem;
-}
-
-/* Typing Game Section */
 #typing-game {
     background: rgba(15, 23, 42, 0.85);
     border-radius: 15px;
     padding: 2rem;
     width: 100%;
-    max-width: 600px;
+    max-width: 650px;
     box-shadow: 0 0 15px 2px #3f51b5;
 }
 
-/* Tier badge */
 #tier-badge {
     font-weight: 700;
     color: #ff9f1c;
@@ -56,7 +36,6 @@ header p {
     user-select: none;
 }
 
-/* Level progress */
 #level-progress {
     display: flex;
     justify-content: space-between;
@@ -64,7 +43,6 @@ header p {
     margin-bottom: 1rem;
     user-select: none;
 }
-
 progress {
     width: 75%;
     height: 20px;
@@ -74,43 +52,27 @@ progress {
     background-color: #23395d;
     box-shadow: 0 0 10px #3f51b5;
 }
+progress::-webkit-progress-bar { background-color: #23395d; border-radius: 10px; }
+progress::-webkit-progress-value { background-color: #ff9f1c; border-radius: 10px; box-shadow: 0 0 10px #ff9f1c; }
+#level-info { color: #ffcb05; font-weight: bold; font-size: 1.1rem; }
 
-progress::-webkit-progress-bar {
-    background-color: #23395d;
-    border-radius: 10px;
-}
-
-progress::-webkit-progress-value {
-    background-color: #ff9f1c;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #ff9f1c;
-}
-
-#level-info {
-    color: #ffcb05;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-/* Challenge text */
 #challenge-text {
     background-color: #1e2a4a;
     border-radius: 10px;
     padding: 1rem;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     line-height: 1.5;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     color: #ffd369;
     user-select: none;
     min-height: 80px;
     box-shadow: inset 0 0 10px #ffcb05;
 }
 
-/* Typing Input */
 #typing-input {
     width: 100%;
     padding: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     border-radius: 10px;
     border: 2px solid #ff9f1c;
     background-color: #0a0f2c;
@@ -119,6 +81,8 @@ progress::-webkit-progress-value {
     outline: none;
     transition: border 0.3s ease;
     font-family: monospace;
+    min-height: 90px;
+    resize: none;
 }
 
 #typing-input:focus {
@@ -126,7 +90,6 @@ progress::-webkit-progress-value {
     box-shadow: 0 0 15px #ffcb05;
 }
 
-/* Stats */
 #stats {
     display: flex;
     justify-content: space-between;
@@ -134,13 +97,8 @@ progress::-webkit-progress-value {
     font-size: 1.1rem;
     user-select: none;
 }
+#stats span { color: #ffda79; font-weight: 600; }
 
-#stats span {
-    color: #ffda79;
-    font-weight: 600;
-}
-
-/* Next Button */
 #next-btn {
     margin-top: 1.5rem;
     width: 100%;
@@ -155,13 +113,20 @@ progress::-webkit-progress-value {
     box-shadow: 0 0 10px #ff9f1c;
     transition: background 0.3s ease;
 }
+#next-btn:hover { background: #ffcb05; box-shadow: 0 0 15px #ffcb05; }
 
-#next-btn:hover {
-    background: #ffcb05;
-    box-shadow: 0 0 15px #ffcb05;
+#user-stats {
+    margin-top: 2rem;
+    background: rgba(20, 24, 56, 0.8);
+    border-radius: 15px;
+    padding: 1.5rem 2rem;
+    max-width: 650px;
+    width: 100%;
+    box-shadow: 0 0 12px #232fd8 inset;
 }
+#user-stats h2 { color: #ffcb05; font-size: 1.3rem; margin-bottom: 1rem; }
+#user-stats div { margin: 0.5rem 0; color: #fffde7; font-size: 1.05rem; }
 
-/* Footer */
 footer {
     margin-top: 3rem;
     color: #6b6f8c;
@@ -169,18 +134,8 @@ footer {
     user-select: none;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-    #typing-game {
-        padding: 1.5rem;
-    }
-
-    header h1 {
-        font-size: 2.4rem;
-    }
-
-    #challenge-text {
-        font-size: 1.1rem;
-        min-height: 70px;
-    }
+@media (max-width: 700px) {
+    #typing-game, #user-stats { padding: 1rem; }
+    header h1 { font-size: 2.1rem; }
+    #challenge-text, #user-stats, #typing-input { font-size: 1rem; }
 }
