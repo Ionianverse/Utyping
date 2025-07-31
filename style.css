@@ -277,3 +277,17 @@ footer {
     font-size: 2rem;
   }
 }
+
+.stars-bg {
+  position: fixed;
+  z-index: 0;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+  opacity: 0.14;
+  animation: starsMove 30s linear infinite alternate;
+}
+@keyframes starsMove {
+  to {background-position: 120px 40px;}
+}
+
