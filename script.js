@@ -296,11 +296,16 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 // --- Switch theme, load contents, update UI ---
 function switchTheme(newTheme) {
-  currentTheme = newTheme;
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-theme') === newTheme);
-  });
-  loadThemeItems(newTheme);
+  const themeBackgrounds = {
+  space: "linear-gradient(135deg, #e6efff 0%, #fafcff 100%) url('https://cdn.pixabay.com/photo/2016/12/05/17/20/space-1882394_1280.jpg') center/cover fixed",
+  general: "linear-gradient(135deg, #fff4dd 0%, #ffffff 100%) url('https://cdn.pixabay.com/photo/2016/11/29/06/16/book-1868068_1280.jpg') center/cover fixed",
+  science: "linear-gradient(135deg, #e2ffe6 0%, #eefaff 100%) url('https://cdn.pixabay.com/photo/2017/02/01/22/02/science-2038437_1280.jpg') center/cover fixed",
+  biology: "linear-gradient(135deg, #eafff3 0%, #fffef1 100%) url('https://cdn.pixabay.com/photo/2017/07/20/17/58/dna-2524189_1280.jpg') center/cover fixed",
+  engineering: "linear-gradient(135deg, #f1eaff 0%, #eefaff 100%) url('https://cdn.pixabay.com/photo/2016/11/21/16/23/gears-1843105_1280.jpg') center/cover fixed",
+  ai: "linear-gradient(135deg, #f0f0ff 0%, #f5fff9 100%) url('https://cdn.pixabay.com/photo/2017/01/30/12/52/artificial-intelligence-2025789_1280.jpg') center/cover fixed"
+};
+document.body.style.background = themeBackgrounds[newTheme] || "";
+
 }
 
 // --- Reset stats for demo: Ctrl+Shift+R ---
