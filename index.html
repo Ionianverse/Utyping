@@ -39,6 +39,26 @@
     <option value="5">5 Minutes</option>
   </select>
 </section>
+<!-- Add this section just above your <section id="typing-game"> -->
+<section id="time-selection" style="margin-bottom:1rem; text-align:center;">
+  <label for="practice-time-select" style="font-weight: 600; color: #3775c6; margin-right: 0.5rem;">
+    Select Practice Time:
+  </label>
+  <select id="practice-time-select" aria-label="Select practice duration">
+    <option value="0">No timer</option>
+    <option value="1">1 Minute</option>
+    <option value="2">2 Minutes</option>
+    <option value="5">5 Minutes</option>
+  </select>
+</section>
+
+<!-- Add this div anywhere in <body>, preferably near the stars background -->
+<div class="universe-animations">
+  <!-- Example universe-themed small animations -->
+  <div class="shooting-star"></div>
+  <div class="comet"></div>
+  <div class="floating-planet"></div>
+</div>
 
   <main id="typing-game">
     <div id="theme-image" aria-label="Theme Image"></div>
