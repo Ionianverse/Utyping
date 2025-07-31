@@ -1,3 +1,13 @@
+const THEME_SOUNDS = {
+  space: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12c82c6b54.mp3',         // Spacey ambient
+  general: 'https://cdn.pixabay.com/audio/2022/12/19/audio_12c28e7ff4.mp3',      // Soft click
+  science: 'https://cdn.pixabay.com/audio/2022/06/12/audio_12c1d8317c.mp3',      // Digital confirm
+  biology: 'https://cdn.pixabay.com/audio/2022/11/16/audio_12e6e3387d.mp3',      // Nature spark
+  engineering: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12c83f28e1.mp3',  // Mechanical
+  ai: 'https://cdn.pixabay.com/audio/2022/11/16/audio_12e6e338f6.mp3'            // Futuristic
+};
+
+
 // Themes metadata with linked text files and images
 const THEMES = {
   space: {
@@ -209,6 +219,11 @@ function checkInput(evt) {
 
 // --- Show statistics feedback popup ---
 function showPopup() {
+  if (THEME_SOUNDS[currentTheme]) {
+  const audio = new Audio(THEME_SOUNDS[currentTheme]);
+  audio.play();
+}
+
   const {wpm, accuracy} = calculateStats();
 
   // Update & save stats
