@@ -16,12 +16,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden; /* To accommodate wide animations */
 }
 
 /* Header & Tabs */
 header {
   text-align: center;
   margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 10; /* Keep above animations */
 }
 header h1 {
   font-size: 2.8rem;
@@ -40,6 +43,8 @@ header p {
   gap: 0.6rem;
   margin-bottom: 1.2rem;
   justify-content: center;
+  position: relative;
+  z-index: 10;
 }
 .tab-btn {
   padding: 0.5rem 1.1rem;
@@ -71,8 +76,23 @@ header p {
   margin-bottom: 1rem;
   width: 100%;
   max-width: 700px;
-  box-shadow: 0 0 20px 2px #8bc0ff1a;
+  box-shadow: 0 0 40px 6px rgba(88, 197, 143, 0.35); /* stronger glow for "nebula" effect */
   position: relative;
+  z-index: 10;
+}
+
+/* Nebula glow behind typing game */
+#typing-game::before {
+  content: "";
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
+  background: radial-gradient(circle at center, #87cefa44, transparent 70%);
+  border-radius: 1.125rem;
+  filter: blur(18px);
+  z-index: -1;
 }
 
 #theme-image {
@@ -148,6 +168,8 @@ progress::-moz-progress-bar {
   color: #2c3141;
   user-select: none;
   min-height: 70px;
+  position: relative;
+  z-index: 10;
 }
 
 #typing-input {
@@ -169,7 +191,6 @@ progress::-moz-progress-bar {
 #typing-input:focus {
   border-color: #5692e8;
 }
-
 #typing-input:focus-visible {
   outline: 3px solid #3775c6;
   outline-offset: 2px;
@@ -219,6 +240,8 @@ progress::-moz-progress-bar {
   max-width: 700px;
   width: 100%;
   box-shadow: 0 0 12px #e2efee;
+  position: relative;
+  z-index: 10;
 }
 #user-stats h2 {
   color: #3775c6;
@@ -236,6 +259,8 @@ footer {
   margin-top: 2rem;
   color: #7e8091;
   font-size: 0.93rem;
+  position: relative;
+  z-index: 10;
 }
 
 /* Popup Modal for Typing Feedback */
@@ -260,6 +285,8 @@ footer {
   text-align: center;
   width: 97vw;
   max-width: 440px;
+  position: relative;
+  z-index: 10001;
 }
 #popup h3 {
   color: #58c58f;
@@ -271,7 +298,7 @@ footer {
   margin-bottom: 1.3rem;
 }
 .popup-hide {
-  display: none !important; /* If you want fade transitions, consider toggling visibility & opacity instead */
+  display: none !important;
 }
 #close-popup {
   background: #5692e8;
@@ -326,4 +353,116 @@ footer {
   to {
     background-position: 120px 40px;
   }
+}
+
+/* ---------------- */
+/* ===== NEW ANIMATIONS ===== */
+/* ---------------- */
+
+/* Universe animations container */
+.universe-animations {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* Shooting Star */
+.shooting-star {
+  position: absolute;
+  top: 25%;
+  left: -120px;
+  width: 3px;
+  height: 70px;
+  background: linear-gradient(45deg, white, transparent);
+  opacity: 0;
+  transform: rotate(45deg);
+  filter: drop-shadow(0 0 4px #99ccff);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.shooting-star.shoot {
+  animation: shootingStarMove 1.5s ease-out forwards;
+  opacity: 1;
+}
+
+@keyframes shootingStarMove {
+  0% {
+    transform: translateX(0) translateY(0) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(450px) translateY(300px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* Comet */
+.comet {
+  position: absolute;
+  top: 65%;
+  left: 100%;
+  width: 14px;
+  height: 6px;
+  background: linear-gradient(90deg, #cbdcff 0%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0.6;
+  filter: drop-shadow(0 0 5px #6fb4ff);
+  animation: cometMove 8s linear infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes cometMove {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(-120vw) translateY(-40vh);
+  }
+}
+
+/* Floating Planet */
+.floating-planet {
+  position: absolute;
+  bottom: 10%;
+  right: 15%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at center, #dbf0ff, #5a9de9);
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px #58a3ff88;
+  animation: floatPlanet 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes floatPlanet {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-18px);
+  }
+}
+
+/* Twinkling Stars Overlay */
+
+.twinkling-stars {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+  opacity: 0.2;
+  animation: starsTwinkle 10s linear infinite alternate;
+  z-index: 2;
+  mix-blend-mode: screen;
+}
+
+@keyframes starsTwinkle {
+  0%, 100% {opacity: 0.15;}
+  50% {opacity: 0.35;}
 }
