@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utyping: Space Typing Adventure</title>
+    <title>Utyping: Universe Typing Adventure</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
     </header>
     <section id="typing-game">
         <div id="tier-badge">
-            <span id="tier">Mercury Novice</span>
+            <span id="tier">Tier</span>
         </div>
         <div id="level-progress">
             <progress id="progress-bar" max="100" value="0"></progress>
@@ -22,12 +22,19 @@
         <div id="challenge-text">
             <span id="text-to-type">Loading...</span>
         </div>
-        <input type="text" id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus>
+        <textarea id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus rows="4"></textarea>
         <div id="stats">
-            <span>Speed: <span id="wpm">0</span> WPM</span>
+            <span>WPM: <span id="wpm">0</span></span>
             <span>Accuracy: <span id="accuracy">100</span>%</span>
         </div>
         <button id="next-btn" style="display:none;">Next Challenge</button>
+    </section>
+    <section id="user-stats">
+        <h2>Your Typing Stats</h2>
+        <div>Paragraphs Completed: <span id="completed">0</span></div>
+        <div>Best WPM: <span id="best-wpm">0</span></div>
+        <div>Average WPM: <span id="avg-wpm">0</span></div>
+        <div>Best Accuracy: <span id="best-accuracy">0%</span></div>
     </section>
     <footer>
         <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
@@ -35,4 +42,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
