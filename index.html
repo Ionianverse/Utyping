@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utyping: Universe Typing Adventure</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utyping: Typing Adventure</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Utyping 🚀</h1>
-        <p>Embark on your Universe Typing Journey!</p>
-    </header>
-    <section id="typing-game">
-        <div id="tier-badge">
-            <span id="tier">Tier</span>
-        </div>
-        <div id="level-progress">
-            <progress id="progress-bar" max="100" value="0"></progress>
-            <span id="level-info">Level 1</span>
-        </div>
-        <div id="challenge-text">
-            <span id="text-to-type">Loading...</span>
-        </div>
-        <textarea id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus rows="4"></textarea>
-        <div id="stats">
-            <span>WPM: <span id="wpm">0</span></span>
-            <span>Accuracy: <span id="accuracy">100</span>%</span>
-        </div>
-        <button id="next-btn" style="display:none;">Next Challenge</button>
-    </section>
-    <section id="user-stats">
-        <h2>Your Typing Stats</h2>
-        <div>Paragraphs Completed: <span id="completed">0</span></div>
-        <div>Best WPM: <span id="best-wpm">0</span></div>
-        <div>Average WPM: <span id="avg-wpm">0</span></div>
-        <div>Best Accuracy: <span id="best-accuracy">0%</span></div>
-    </section>
-    <footer>
-        <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
-    </footer>
-    <script src="script.js"></script>
+  <header>
+    <h1>Utyping 🚀</h1>
+    <p>Explore Typing with Space, Science, and More!</p>
+  </header>
+  <section id="tabs">
+    <button class="tab-btn active" data-theme="space">Universe/Space</button>
+    <button class="tab-btn" data-theme="general">General</button>
+    <button class="tab-btn" data-theme="science">Science</button>
+    <button class="tab-btn" data-theme="biology">Biology</button>
+    <button class="tab-btn" data-theme="engineering">Engineering</button>
+    <button class="tab-btn" data-theme="ai">AI & Technology</button>
+  </section>
+  <section id="typing-game">
+    <div id="theme-image"></div>
+    <div id="tier-badge">
+      <span id="tier">Tier</span>
+    </div>
+    <div id="level-progress">
+      <progress id="progress-bar" max="100" value="0"></progress>
+      <span id="level-info">Level 1</span>
+    </div>
+    <div id="challenge-text">
+      <span id="text-to-type">Loading...</span>
+    </div>
+    <textarea id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus rows="4"></textarea>
+    <div id="stats">
+      <span>WPM: <span id="wpm">0</span></span>
+      <span>Accuracy: <span id="accuracy">100</span>%</span>
+    </div>
+    <button id="next-btn" style="display:none;">Next Challenge</button>
+  </section>
+  <section id="user-stats">
+    <h2>Your Typing Stats</h2>
+    <div>Paragraphs Completed: <span id="completed">0</span></div>
+    <div>Best WPM: <span id="best-wpm">0</span></div>
+    <div>Average WPM: <span id="avg-wpm">0</span></div>
+    <div>Best Accuracy: <span id="best-accuracy">0%</span></div>
+  </section>
+
+  <!-- Popup Modal for Typing Feedback -->
+  <div id="popup-container" class="popup-hide">
+    <div id="popup">
+      <h3>Great job! Typing Complete 🎉</h3>
+      <div id="popup-stats"></div>
+      <button id="close-popup">Continue</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
+  </footer>
+  <script src="script.js"></script>
 </body>
 </html>
