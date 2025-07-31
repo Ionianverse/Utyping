@@ -12,24 +12,24 @@
 
   <header>
     <div class="animated-bg-icons">
-  <img src="https://cdn.pixabay.com/animation/2023/07/03/11/19/11-19-00-673_512.gif" alt="planet floating"/>
-  <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="star spin"/>
-</div>
+      <img src="https://cdn.pixabay.com/animation/2023/07/03/11/19/11-19-00-673_512.gif" alt="Planet floating" />
+      <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Spinning star" />
+    </div>
 
     <h1>Utyping 🚀</h1>
     <p>Explore Typing with Space, Science, and More!</p>
   </header>
 
-  <section id="tabs">
-    <button class="tab-btn active" data-theme="space">Universe/Space</button>
-    <button class="tab-btn" data-theme="general">General</button>
-    <button class="tab-btn" data-theme="science">Science</button>
-    <button class="tab-btn" data-theme="biology">Biology</button>
-    <button class="tab-btn" data-theme="engineering">Engineering</button>
-    <button class="tab-btn" data-theme="ai">AI & Technology</button>
-  </section>
+  <nav id="tabs" role="tablist" aria-label="Typing Themes">
+    <button class="tab-btn active" data-theme="space" role="tab" aria-selected="true" tabindex="0">Universe/Space</button>
+    <button class="tab-btn" data-theme="general" role="tab" aria-selected="false" tabindex="-1">General</button>
+    <button class="tab-btn" data-theme="science" role="tab" aria-selected="false" tabindex="-1">Science</button>
+    <button class="tab-btn" data-theme="biology" role="tab" aria-selected="false" tabindex="-1">Biology</button>
+    <button class="tab-btn" data-theme="engineering" role="tab" aria-selected="false" tabindex="-1">Engineering</button>
+    <button class="tab-btn" data-theme="ai" role="tab" aria-selected="false" tabindex="-1">AI & Technology</button>
+  </nav>
 
-  <section id="typing-game">
+  <main id="typing-game">
     <div id="theme-image" aria-label="Theme Image"></div>
 
     <div id="tier-badge">
@@ -45,6 +45,7 @@
       <span id="text-to-type">Loading...</span>
     </div>
 
+    <label for="typing-input" class="visually-hidden">Typing input area</label>
     <textarea
       id="typing-input"
       placeholder="Start typing here..."
@@ -60,7 +61,7 @@
     </div>
 
     <button id="next-btn" style="display:none;">Next Challenge</button>
-  </section>
+  </main>
 
   <section id="user-stats" aria-live="polite">
     <h2>Your Typing Stats</h2>
