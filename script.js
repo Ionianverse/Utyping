@@ -220,9 +220,9 @@ function checkInput(evt) {
 // --- Show statistics feedback popup ---
 function showPopup() {
   if (THEME_SOUNDS[currentTheme]) {
-  const audio = new Audio(THEME_SOUNDS[currentTheme]);
-  audio.play();
-}
+    const audio = new Audio(THEME_SOUNDS[currentTheme]);
+    audio.play();
+  }
 
   const {wpm, accuracy} = calculateStats();
 
@@ -268,6 +268,7 @@ function showPopup() {
 function hidePopup() {
   popupContainer.classList.add('popup-hide');
   document.onkeydown = null;
+  // Increment level and update tier when popup closes
   currentLevel++;
   updateTier();
   startNewChallenge();
@@ -276,37 +277,55 @@ function hidePopup() {
 // --- Event listeners ---
 input.addEventListener("input", checkInput);
 
+// Prevent Enter key submitting or adding new lines; confirmed paragraph shows popup
 input.addEventListener("keydown", function(evt){
-  if (evt.key === "Enter" && input.value === currentParagraph) {
+  if (evt.key === "Enter") {
     evt.preventDefault();
-    showPopup();
+    if (input.value === currentParagraph && !showFeedback) {
+      showPopup();
+    }
   }
 });
 
 nextBtn.addEventListener("click", () => {
-  currentLevel++;
+  currentLevel++;  // Caution: This also increments level, so be sure this button is used carefully.
   updateTier();
   startNewChallenge();
 });
 closePopupBtn.addEventListener("click", hidePopup);
 
+// Tabs buttons behavior with accessible active state update
 document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.onclick = () => switchTheme(btn.getAttribute('data-theme'));
+  btn.addEventListener('click', () => {
+    const selectedTheme = btn.getAttribute('data-theme');
+    if (selectedTheme === currentTheme) return; // no change
+
+    // Update active tab button classes & aria-selected
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b === btn);
+      b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      b.tabIndex = b === btn ? 0 : -1;
+    });
+
+    // Update current theme and load content
+    currentTheme = selectedTheme;
+    switchTheme(currentTheme);
+    loadThemeItems(currentTheme);
+  });
 });
 
 // --- Switch theme, load contents, update UI ---
 function switchTheme(newTheme) {
+  // Corrected background images to match THEMES images more logically
   const themeBackgrounds = {
-  space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-  general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-  science: "linear-gradient(135deg, #1f2f45 0%, #3a3a68 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-  biology: "linear-gradient(135deg, #234c3c 0%, #a1eac9 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-  engineering: "linear-gradient(135deg, #181b2d 0%, #3f4277 100%), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
-  ai: "linear-gradient(135deg, #00061a 0%, #abb3ce 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed"
-};
-document.body.style.background = themeBackgrounds[newTheme] || "";
-
-
+    space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+    general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+    science: "linear-gradient(135deg, #1f2f45 0%, #3a3a68 100%), url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+    biology: "linear-gradient(135deg, #234c3c 0%, #a1eac9 100%), url('https://images.unsplash.com/photo-1454023492550-5696f8ff10e1?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+    engineering: "linear-gradient(135deg, #181b2d 0%, #3f4277 100%), url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
+    ai: "linear-gradient(135deg, #00061a 0%, #abb3ce 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed"
+  };
+  document.body.style.background = themeBackgrounds[newTheme] || "";
 }
 
 // --- Reset stats for demo: Ctrl+Shift+R ---
@@ -326,22 +345,21 @@ window.addEventListener("keydown", evt => {
 switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
-startNewChallenge();
+loadThemeItems(currentTheme);
 
 
-.animated-bg-icons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 1rem;
-  pointer-events: none;
+/* Recommended CSS for visually-hidden label (if you add a label for the textarea):
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; 
+  height: 1px; 
+  padding: 0; 
+  margin: -1px; 
+  overflow: hidden; 
+  clip: rect(0,0,0,0); 
+  border: 0;
 }
-.animated-bg-icons img {
-  width: 80px; height: auto;
-  opacity: 0.6;
-  animation: float 3s ease-in-out infinite alternate;
-}
-@keyframes float {
-  from { transform: translateY(0);}
-  to { transform: translateY(-18px);}
-}
+*/
+
+/* Also confirm your CSS for .tab-btn.active styles to visually highlight active theme button */
