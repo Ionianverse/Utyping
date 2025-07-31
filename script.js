@@ -135,3 +135,50 @@ function checkInput() {
     totalTyped = typed.length;
     totalErrors = 0;
     for (let i = 0; i < typed.length; i++) {
+        if (typed[i] !== currentParagraph[i]) totalErrors++;
+    }
+    calculateStats();
+    progressBar.value = Math.min((typed.length / currentParagraph.length) * 100, 100);
+    if (typed === currentParagraph) {
+        input.disabled = true;
+        nextBtn.style.display = "block";
+    }
+}
+
+nextBtn.addEventListener("click", () => {
+    // Update and store user stats
+    let {wpm, accuracy} = calculateStats();
+    stats.completed++;
+    stats.totalWPM += wpm;
+    stats.totalAccuracy += accuracy;
+    if (wpm > stats.bestWPM) stats.bestWPM = wpm;
+    if (accuracy > stats.bestAccuracy) stats.bestAccuracy = accuracy;
+    localStorage.setItem("stats_v1", JSON.stringify(stats));
+    updateStatsDisplay();
+
+    // Level up and update tier
+    currentLevel++;
+    updateTier();
+    startNewChallenge();
+});
+
+input.addEventListener("input", checkInput);
+
+// RESET function (for testing/demo: press R to reset stats)
+window.addEventListener("keydown", evt => {
+    // Hold ctrl+shift+R to reset stats
+    if (evt.ctrlKey && evt.shiftKey && evt.key.toLowerCase() === "r") {
+        localStorage.removeItem('stats_v1');
+        stats = {completed: 0, totalWPM: 0, totalAccuracy: 0, bestWPM: 0, bestAccuracy: 0};
+        updateStatsDisplay();
+        currentLevel = 1;
+        updateTier();
+        startNewChallenge();
+        alert("Stats and progress reset!");
+    }
+});
+
+// INIT
+updateTier();
+startNewChallenge();
+updateStatsDisplay();
