@@ -217,7 +217,6 @@ function showPopup() {
   stats.totalAccuracy += accuracy;
   if (wpm > stats.bestWPM) stats.bestWPM = wpm;
   if (accuracy > stats.bestAccuracy) stats.bestAccuracy = accuracy;
-  localStorage.setItem("stats_v2", JSON.stringify(stats));
   updateStatsDisplay();
 
   // Personalized feedback example (you can customize further)
