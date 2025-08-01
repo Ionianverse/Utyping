@@ -1,3 +1,4 @@
+// Theme music per theme
 const THEME_SOUNDS = {
   space: 'https://cdn.pixabay.com/audio/2022/10/16/audio_12c82c6b54.mp3',
   general: 'https://cdn.pixabay.com/audio/2022/12/19/audio_12c28e7ff4.mp3',
@@ -34,6 +35,9 @@ const popupContainer = get("popup-container");
 const popupStats = get("popup-stats");
 const closePopupBtn = get("close-popup");
 const timeSelect = get('practice-time-select');
+const toggleSoundBtn = get('toggle-sound');
+const toggleDarkBtn = get('toggle-dark');
+const downloadCSVBtn = get('download-csv');
 
 let allItems = [];
 let currentTheme = "space";
@@ -45,6 +49,7 @@ let startTime = null;
 let totalTyped = 0;
 let totalErrors = 0;
 let showFeedback = false;
+let popupOpen = false;
 
 let timer = null;
 let timeLeft = 0; // seconds
@@ -56,6 +61,9 @@ let stats = {
   bestWPM: 0,
   bestAccuracy: 0
 };
+
+let muteSound = false;
+let isDarkMode = false;
 
 const tiers = [
   {name: "Mercury Novice", minLevel: 1, color: "#ffcc32"},
@@ -71,7 +79,6 @@ const tiers = [
 async function loadThemeItems(themeKey) {
   const theme = THEMES[themeKey];
   themeImage.innerHTML = theme.image ? `<img src="${theme.image}" alt="${theme.display}">` : "";
-
   try {
     const response = await fetch(theme.file + "?v=" + Date.now());
     if (!response.ok) throw new Error(`Failed to load ${theme.file}`);
@@ -82,7 +89,6 @@ async function loadThemeItems(themeKey) {
     allItems = ["Error loading paragraphs. Please check the content files."];
     console.error(error);
   }
-
   startNewChallenge();
 }
 
@@ -95,6 +101,7 @@ function updateTier() {
     if (currentLevel >= tiers[i].minLevel) {
       if (!tier || tier.name !== tiers[i].name) {
         showTierMessage(tiers[i].name, tiers[i].color);
+        triggerShootingStar();
       }
       tier = tiers[i];
       break;
@@ -150,7 +157,6 @@ function startTimer() {
     timeLeft--;
     if (timeLeft < 0) timeLeft = 0;
     levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(timeLeft)}`;
-
     if (timeLeft <= 0) {
       clearTimer();
       endSessionDueToTimeout();
@@ -168,7 +174,7 @@ function endSessionDueToTimeout() {
 function startNewChallenge() {
   clearTimer();
   currentParagraph = pickParagraph();
-  textToTypeElement.textContent = currentParagraph;
+  drawTextWithFeedback();
   input.value = "";
   input.disabled = false;
   input.focus();
@@ -181,6 +187,7 @@ function startNewChallenge() {
   levelInfo.textContent = `Level ${currentLevel}`;
   nextBtn.style.display = "none";
   showFeedback = false;
+  popupOpen = false;
 }
 
 function updateStatsDisplay() {
@@ -203,24 +210,44 @@ function calculateStats() {
   return {wpm, accuracy};
 }
 
-function checkInput(evt) {
+// Highlight typed errors as user types
+function drawTextWithFeedback() {
   const typed = input.value;
+  let output = '';
+  let allCorrect = true;
+  for (let i = 0; i < currentParagraph.length; i++) {
+    const c = currentParagraph[i];
+    if (typed[i] === undefined) {
+      output += `<span>${c === " " ? "&nbsp;" : c}</span>`;
+    } else if (typed[i] === c) {
+      output += `<span style="color:#58c58f; text-shadow:0 0 2px #b5f7de;">${c === " " ? "&nbsp;" : c}</span>`;
+    } else {
+      output += `<span style="color:#fff;background:#f94d56;border-radius:2px;padding:0 2px;">${c === " " ? "&nbsp;" : c}</span>`;
+      allCorrect = false;
+    }
+  }
+  textToTypeElement.innerHTML = output;
+}
+
+function checkInput(evt) {
+  if (popupOpen) {
+    input.blur();
+    return;
+  }
+  const typed = input.value;
+  // Timer starts on first input
   if (!startTime && typed.length) {
     startTime = new Date();
     startTimer();
   }
-
   totalTyped = typed.length;
   totalErrors = 0;
-
   for (let i = 0; i < typed.length; i++) {
     if (typed[i] !== currentParagraph[i]) totalErrors++;
   }
-
   calculateStats();
-
   progressBar.value = Math.min((typed.length / currentParagraph.length) * 100, 100);
-
+  drawTextWithFeedback();
   if (typed === currentParagraph && !showFeedback) {
     input.disabled = true;
     showFeedback = true;
@@ -230,18 +257,17 @@ function checkInput(evt) {
 }
 
 function showPopup(timeout = false) {
+  popupOpen = true;
   if (timeout && !showFeedback) {
     showFeedback = true;
     nextBtn.style.display = "none";
   }
-  if (THEME_SOUNDS[currentTheme]) {
+  if (!muteSound && THEME_SOUNDS[currentTheme]) {
     const audio = new Audio(THEME_SOUNDS[currentTheme]);
     audio.play();
   }
   clearTimer();
-
   const {wpm, accuracy} = calculateStats();
-
   stats.completed += 1;
   stats.totalWPM += wpm;
   stats.totalAccuracy += accuracy;
@@ -281,13 +307,13 @@ function showPopup(timeout = false) {
     }
   }
 }
-
 function hidePopup() {
   popupContainer.classList.add('popup-hide');
   document.onkeydown = null;
   currentLevel++;
   updateTier();
   startNewChallenge();
+  popupOpen = false;
 }
 
 input.addEventListener("input", checkInput);
@@ -306,6 +332,7 @@ nextBtn.addEventListener("click", () => {
   updateTier();
   startNewChallenge();
 });
+
 closePopupBtn.addEventListener("click", hidePopup);
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -326,7 +353,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 function switchTheme(newTheme) {
-
+  // Particles (for visual effects)
   const themeParticleSettings = {
     space: { color: "#fff", shape: ["star"], number: 80 },
     science: { color: "#00e7cf", shape: ["circle"], number: 55 },
@@ -335,7 +362,6 @@ function switchTheme(newTheme) {
     biology: { color: "#4cf079", shape: ["circle"], number: 50 },
     general: { color: "#767799", shape: ["circle"], number: 40 }
   };
-
   const settings = themeParticleSettings[newTheme] || themeParticleSettings.general;
   tsParticles.load("particles-js", {
     fullScreen: { enable: true, zIndex: 0 },
@@ -349,6 +375,7 @@ function switchTheme(newTheme) {
     }
   });
 
+  // Theme backgrounds (light & dark mode handled next)
   const themeBackgrounds = {
     space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
     general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
@@ -358,12 +385,49 @@ function switchTheme(newTheme) {
     ai: "linear-gradient(135deg, #00061a 0%, #abb3ce 100%), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1400&q=80') center/cover fixed"
   };
   document.body.style.background = themeBackgrounds[newTheme] || "";
+  updateDarkMode();
 }
 
-// Reset shortcut Ctrl+Shift+R
+// Manual dark/light toggle
+toggleDarkBtn.addEventListener('click', () => {
+  isDarkMode = !isDarkMode;
+  updateDarkMode();
+});
+function updateDarkMode() {
+  if (isDarkMode) document.body.classList.add('dark-mode');
+  else document.body.classList.remove('dark-mode');
+}
+
+// Sound controls
+toggleSoundBtn.addEventListener('click', () => {
+  muteSound = !muteSound;
+  toggleSoundBtn.textContent = muteSound ? "🔇" : "🔊";
+});
+
+// Download CSV stats
+downloadCSVBtn.addEventListener('click', () => {
+  const csv =
+    "Paragraphs Completed,Best WPM,Average WPM,Best Accuracy (%)\n" +
+    [stats.completed, stats.bestWPM, stats.completed === 0 ? 0 : Math.round(stats.totalWPM / stats.completed), stats.bestAccuracy].join(",");
+  const a = document.createElement('a');
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  a.download = "UtypingStats.csv";
+  a.click();
+});
+
+// Trigger shooting star animation
+function triggerShootingStar() {
+  const star = document.querySelector('.shooting-star');
+  if (!star) return;
+  star.classList.remove('shoot');
+  void star.offsetWidth;
+  star.classList.add('shoot');
+  setTimeout(() => star.classList.remove('shoot'), 1600);
+}
+
+// Reset shortcut Ctrl+Shift+R: clears stats and reloads
 window.addEventListener("keydown", evt => {
   if (evt.ctrlKey && evt.shiftKey && evt.key.toLowerCase() === "r") {
-    localStorage.removeItem('stats_v2');
     stats = {completed: 0, totalWPM: 0, totalAccuracy: 0, bestWPM: 0, bestAccuracy: 0};
     updateStatsDisplay();
     currentLevel = 1;
@@ -373,8 +437,9 @@ window.addEventListener("keydown", evt => {
   }
 });
 
-// Initialize the app
+// App init
 switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
 loadThemeItems(currentTheme);
+updateDarkMode();
