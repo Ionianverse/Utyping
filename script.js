@@ -331,6 +331,33 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 function switchTheme(newTheme) {
+
+  const themeParticleSettings = {
+  space: { color: "#fff", shape: ["star"], number: 80 },
+  science: { color: "#00e7cf", shape: ["circle"], number: 55 },
+  ai: { color: "#8e88f7", shape: ["edge"], number: 70 },
+  engineering: { color: "#ffd635", shape: ["polygon"], number: 40 },
+  biology: { color: "#4cf079", shape: ["circle"], number: 50 },
+  general: { color: "#767799", shape: ["circle"], number: 40 }
+};
+
+function switchTheme(newTheme) {
+  // ...your code...
+  const settings = themeParticleSettings[newTheme] || themeParticleSettings.general;
+  tsParticles.load("particles-js", {
+    fullScreen: { enable: true, zIndex: 0 },
+    particles: {
+      number: { value: settings.number },
+      color: { value: settings.color },
+      shape: { type: settings.shape },
+      opacity: { value: 0.44 },
+      size: { value: [1.2, 4], random: true },
+      move: { enable: true, speed: 0.3 }
+    }
+  });
+}
+
+  
   const themeBackgrounds = {
     space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
     general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
