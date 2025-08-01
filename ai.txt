@@ -1,2 +1,12 @@
 Artificial intelligence allows computers to learn, reason, and solve problems. From voice assistants to smart search, AI has become a part of daily life and work tasks.
 Robots use sensors and AI to perform precise jobs, from exploring Mars to assembling tiny computer parts. Machine learning helps these systems improve over time, making them smarter and more helpful.
+Artificial intelligence enables computers to learn from data and make decisions.
+Machine learning algorithms improve accuracy as they process more data examples.
+Neural networks attempt to mimic the human brain’s interconnected neuron structure.
+Natural language processing allows machines to understand and generate human language.
+Computer vision lets AI systems interpret images and videos for various applications.
+Automation powered by AI increases efficiency and reduces repetitive human tasks.
+Data privacy and security are vital considerations in developing AI technologies.
+Reinforcement learning trains agents by rewarding desired behaviors in an environment.
+Big data analytics uncovers patterns and insights from vast datasets.
+Ethical AI involves creating systems that are transparent, fair, and accountable.
