@@ -94,6 +94,7 @@ header p {
 /* Timer Select */
 #time-selection {
   font-size: 1rem;
+  color: #ddeaff;
 }
 #practice-time-select {
   margin-left: 0.5em;
@@ -123,19 +124,6 @@ header p {
 .control-buttons button:hover {
   background: #b1d1ff;
   color: #000b2a;
-}
-
-/* Theme Image */
-#theme-image {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-#theme-image img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 3px solid #34c9f1;
-  box-shadow: 0 0 20px #5089ff88;
 }
 
 /* Typing Game Area */
@@ -187,8 +175,11 @@ main#typing-game {
   box-shadow: 0 0 4px #5ea7d040;
   min-height: 3em;
   margin-bottom: 0.7em;
+  line-height: 1.4;
+  white-space: pre-wrap;
 }
 
+/* The typing input */
 #typing-input {
   width: 100%;
   font-size: 1.1rem;
@@ -200,6 +191,8 @@ main#typing-game {
   font-weight: 520;
   resize: none;
   outline: none;
+  transition: border-color 0.3s ease;
+  min-height: 6em;
 }
 #typing-input:focus {
   border-color: #3ab4ff;
@@ -208,14 +201,27 @@ main#typing-game {
 #typing-input[disabled] {
   background: #eee;
   color: #999;
+  cursor: not-allowed;
 }
 
+/* Stats Display */
 #stats {
   display: flex;
   justify-content: space-around;
   margin-top: 1rem;
   color: #86dcec;
   font-weight: 600;
+  user-select: none;
+}
+
+/* Timer Line visual */
+#timer-line {
+  height: 6px;
+  background: #4adaaa;
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 1rem;
+  transition: width 1s linear;
 }
 
 /* Next Button */
@@ -238,7 +244,7 @@ main#typing-game {
   color: #18166a;
 }
 
-/* User Stats */
+/* User Stats section */
 #user-stats {
   margin: 2rem auto 1rem;
   text-align: center;
@@ -247,6 +253,7 @@ main#typing-game {
   border-radius: 1rem;
   font-size: 1rem;
   color: #a9f5df;
+  max-width: 680px;
 }
 
 /* Popup */
@@ -271,10 +278,16 @@ main#typing-game {
   color: white;
   text-align: center;
   box-shadow: 0 0 40px #529dff6d;
+  width: 90%;
+  max-width: 420px;
 }
 #popup h3 {
   color: #ffd13a;
   margin-bottom: 0.7em;
+}
+#popup-stats p {
+  font-size: 1rem;
+  margin: 0.5em 0;
 }
 #close-popup {
   background: #ffd43b;
@@ -284,6 +297,8 @@ main#typing-game {
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
+  margin-top: 1rem;
+  width: 100%;
 }
 #close-popup:hover {
   background: #2ddca7;
@@ -309,6 +324,8 @@ main#typing-game {
     padding: 0.5em 1em;
   }
 }
+
+/* Starry background style if needed */
 .stars-bg {
   background: url('https://cdn.pixabay.com/photo/2017/06/20/19/22/stellar-2421109_1280.jpg') repeat top center;
   opacity: 0.23;
