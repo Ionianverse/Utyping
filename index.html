@@ -10,8 +10,8 @@
 <body>
 
   <div id="particles-js"></div>
-
   <div class="stars-bg"></div>
+  <div class="twinkling-stars"></div>
 
   <header>
     <!-- Animated cosmic icons at the top -->
@@ -19,14 +19,11 @@
       <img src="https://cdn.pixabay.com/animation/2023/07/03/11/19/11-19-00-673_512.gif" alt="Planet floating" />
       <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Spinning star" />
     </div>
-
-    <!-- Extra animated decor for atmosphere -->
     <div class="animated-decor">
       <img src="https://cdn.pixabay.com/animation/2023/09/28/11/29/11-29-39-920_512.gif" alt="Spinning planet" />
       <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Rotating star" />
       <img src="https://media.giphy.com/media/3o6fJ9yGNtKQp2dxHK/giphy.gif" alt="Galaxy" />
     </div>
-
     <h1>Utyping 🚀</h1>
     <p>Explore Typing with Space, Science, and More!</p>
   </header>
@@ -41,19 +38,19 @@
   </nav>
 
   <section id="time-selection" style="margin-bottom:1rem; text-align:center;">
-    <label for="practice-time-select" style="font-weight: 600; color: #3775c6; margin-right: 0.5rem;">
-      Select Practice Time:
-    </label>
+    <label for="practice-time-select" style="font-weight: 600; color: #3775c6; margin-right: 0.5rem;">Select Practice Time:</label>
     <select id="practice-time-select" aria-label="Select practice duration">
       <option value="0">No timer</option>
       <option value="1">1 Minute</option>
       <option value="2">2 Minutes</option>
       <option value="5">5 Minutes</option>
     </select>
+    <button id="toggle-dark" aria-label="Toggle dark/light theme" style="margin-left:1rem;">🌙/☀️</button>
+    <button id="toggle-sound" aria-label="Mute or unmute sound" style="margin-left:.5rem;">🔊</button>
+    <button id="download-csv" aria-label="Download session statistics as CSV" style="margin-left:.5rem;">⬇️ Stats</button>
   </section>
 
   <div class="universe-animations" aria-hidden="true">
-    <!-- Example universe-themed small animations -->
     <div class="shooting-star"></div>
     <div class="comet"></div>
     <div class="floating-planet"></div>
@@ -61,35 +58,20 @@
 
   <main id="typing-game">
     <div id="theme-image" aria-label="Theme Image"></div>
-
-    <div id="tier-badge" role="region" aria-live="polite" aria-atomic="true">
-      <span id="tier">Tier</span>
-    </div>
-
+    <div id="tier-badge" role="region" aria-live="polite" aria-atomic="true"><span id="tier">Tier</span></div>
     <div id="level-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Typing progress">
       <progress id="progress-bar" max="100" value="0"></progress>
       <span id="level-info">Level 1</span>
     </div>
-
     <div id="challenge-text" aria-live="polite" aria-atomic="true">
       <span id="text-to-type">Loading...</span>
-    </div>
-
+    </div><!-- Real-time feedback handled in JS -->
     <label for="typing-input" class="visually-hidden">Typing input area</label>
-    <textarea
-      id="typing-input"
-      placeholder="Start typing here..."
-      autocomplete="off"
-      autofocus
-      rows="4"
-      aria-label="Typing input"
-    ></textarea>
-
+    <textarea id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus rows="4" aria-label="Typing input"></textarea>
     <div id="stats" aria-live="polite">
       <span>WPM: <span id="wpm">0</span></span>
       <span>Accuracy: <span id="accuracy">100</span>%</span>
     </div>
-
     <button id="next-btn" style="display:none;">Next Challenge</button>
   </main>
 
@@ -113,7 +95,6 @@
   <footer>
     <p>Made with <span style="color: #ffcb05;">★</span> in the Universe | GPL-3.0 License</p>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
