@@ -1,327 +1,332 @@
-// Query elements
-const themeButtons = document.querySelectorAll(".tab-btn");
-const challengeText = document.getElementById("challenge-text");
-const input = document.getElementById("typing-input");
-const nextBtn = document.getElementById("next-btn");
-const wpmStat = document.getElementById("wpm");
-const accuracyStat = document.getElementById("accuracy");
-const timerSelect = document.getElementById("practice-time-select");
-const popupContainer = document.getElementById("popup-container");
-const popupStats = document.getElementById("popup-stats");
-const closePopup = document.getElementById("close-popup");
-const tierBadge = document.getElementById("tier-badge");
-const progressBar = document.getElementById("progress-bar");
-const timerLine = document.getElementById("timer-line");
-const toggleDarkBtn = document.getElementById("toggle-dark");
-const toggleSoundBtn = document.getElementById("toggle-sound");
-const downloadCsvBtn = document.getElementById("download-csv");
-
-const THEMES = {
-  space: { display: "Universe/Space", file: "space.txt", bg: 'url("https://media.giphy.com/media/QU7DRFzMtbZTU/giphy.gif")' },
-  general: { display: "General", file: "general.txt", bg: 'url("https://media.giphy.com/media/5xtDarDFwPbgd2cI5g4/giphy.gif")' },
-  science: { display: "Science", file: "science.txt", bg: 'url("https://media.giphy.com/media/l0MYu5TvlTZkVFM8k/giphy.gif")' },
-  biology: { display: "Biology", file: "biology.txt", bg: 'url("https://media.giphy.com/media/3o6ZtbIPLwtXmGREXO/giphy.gif")' },
-  engineering: { display: "Engineering", file: "engineering.txt", bg: 'url("https://media.giphy.com/media/BqUfuAz4WtpJK/giphy.gif")' },
-  ai: { display: "AI & Technology", file: "ai.txt", bg: 'url("https://media.giphy.com/media/3o7btTRcUZPryvn2Te/giphy.gif")' },
-};
-
-let currentTheme = "space";
-let allItems = [];
-let currentText = "";
-let typedText = "";
-let startTime = null;
-let intervalId = null;
-let timerLineIntervalId = null;
-let totalTyped = 0;
-let correctTyped = 0;
-let completedChallenges = 0;
-
-let statsHistory = [];
-
-let soundEnabled = true;
-
-// Helper: Load text file with fallback if needed
-function loadThemeItems(themeKey) {
-  const theme = THEMES[themeKey];
-  document.getElementById("background-overlay").style.backgroundImage = theme.bg || "";
-  tierBadge.textContent = theme.display + " Tier";
-
-  fetch(theme.file + "?v=" + Date.now())
-    .then(res => {
-      if (!res.ok) throw new Error("Network response not ok");
-      return res.text();
-    })
-    .then(data => {
-      allItems = data.split(/\r?\n/).map(line => line.trim()).filter(line => line);
-      startNewChallenge();
-    })
-    .catch(() => {
-      allItems = ["Failed to load content. Please try again later."];
-      startNewChallenge();
-    });
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-// Start one typing challenge
-function startNewChallenge() {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #000b21, #101532);
+  color: #f1f7ff;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.3s;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, #23262e, #0a0c13);
+  color: #eaeaff;
+}
+
+/* Background Overlay (GIF from JS) */
+#background-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  filter: blur(3px);
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 2.5rem 1rem 1.3rem;
+}
+header h1 {
+  font-size: 2.5rem;
+  color: #56aedc;
+  font-weight: 800;
+  text-shadow: 0 0 12px #1c2547;
+}
+header p {
+  color: #cccdee;
+  font-size: 1.1rem;
+  margin-top: 6px;
+}
+
+/* Tabs */
+#tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.tab-btn {
+  background: rgba(33,49,77,0.85);
+  color: #c7d8ff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6em 1.3em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.tab-btn:hover,
+.tab-btn:focus {
+  background: #9cb8fc;
+  color: #0d1c3a;
+}
+.tab-btn.active {
+  background: #f1f4ff;
+  color: #1a2349;
+  box-shadow: 0 2px 15px #6fa3ff80;
+}
+
+/* Controls Container */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Timer Select */
+#time-selection {
+  font-size: 1rem;
+  color: #ddeaff;
+}
+#practice-time-select {
+  margin-left: 0.5em;
+  padding: 0.4em 1em;
+  border-radius: 8px;
+  border: 1px solid #ddeaff;
+  font-weight: 600;
+  background: #eef4ff;
+  color: #27345a;
+}
+
+/* Control Buttons */
+.control-buttons {
+  display: flex;
+  gap: 0.6rem;
+}
+.control-buttons button {
+  background: #2a2f4e;
+  color: #b0cdf6;
+  border: none;
+  border-radius: 50%;
+  padding: 0.5em 0.7em;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.control-buttons button:hover {
+  background: #b1d1ff;
+  color: #000b2a;
+}
+
+/* Typing Game Area */
+main#typing-game {
+  max-width: 680px;
+  margin: auto;
+  background: rgba(12,18,38, 0.9);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 48px #2a379a50;
+  padding: 2rem 1.5rem;
+}
+
+#level-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+#progress-bar {
+  width: 220px;
+  height: 1rem;
+  border-radius: 100px;
+  accent-color: #32d288;
+}
+#level-info {
+  font-size: 1rem;
+  color: #79a7f8;
+}
+
+#tier-badge {
+  background: rgba(109,211,255,0.07);
+  color: #ffe700;
+  font-weight: bold;
+  padding: 0.4em 1.2em;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+#challenge-text {
+  background: rgba(17,20,44,0.1);
+  border-radius: 10px;
+  padding: 0.7em;
+  font-family: monospace;
+  font-size: 1.15rem;
+  user-select: none;
+  box-shadow: 0 0 4px #5ea7d040;
+  min-height: 3em;
+  margin-bottom: 0.7em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+/* The typing input */
+#typing-input {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.8em;
+  border-radius: 12px;
+  border: 2px solid #343868;
+  background: rgba(255,255,255,0.95);
+  color: #222c5e;
+  font-weight: 520;
+  resize: none;
+  outline: none;
+  transition: border-color 0.3s ease;
+  min-height: 6em;
+}
+#typing-input:focus {
+  border-color: #3ab4ff;
+  box-shadow: 0 0 18px #5cf6ff60;
+}
+#typing-input[disabled] {
+  background: #eee;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Stats Display */
+#stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+  color: #86dcec;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Timer Line visual */
+#timer-line {
+  height: 6px;
+  background: #4adaaa;
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 1rem;
+  transition: width 1s linear;
+}
+
+/* Next Button */
+#next-btn {
+  margin: 1.5rem auto 0;
+  display: block;
+  background: #4adaaa;
+  color: #110e2e;
+  font-weight: bold;
+  border: none;
+  border-radius: 1.2em;
+  padding: 0.7em 2.5em;
+  font-size: 1rem;
+  box-shadow: 0 0 14px #75ffd3a5;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+#next-btn:hover {
+  background: #10f0e0;
+  color: #18166a;
+}
+
+/* User Stats section */
+#user-stats {
+  margin: 2rem auto 1rem;
+  text-align: center;
+  background: rgba(42,55,110,0.13);
+  padding: 1rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  color: #a9f5df;
+  max-width: 680px;
+}
+
+/* Popup */
+#popup-container {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(17, 27, 60, 0.8);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+#popup-container:not(.popup-hide) {
+  display: flex;
+}
+#popup {
+  background: #1c2346fa;
+  padding: 2rem;
+  border-radius: 1rem;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 40px #529dff6d;
+  width: 90%;
+  max-width: 420px;
+}
+#popup h3 {
+  color: #ffd13a;
+  margin-bottom: 0.7em;
+}
+#popup-stats p {
+  font-size: 1rem;
+  margin: 0.5em 0;
+}
+#close-popup {
+  background: #ffd43b;
+  border: none;
+  padding: 0.6em 2em;
+  border-radius: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 1rem;
+  width: 100%;
+}
+#close-popup:hover {
+  background: #2ddca7;
+  color: #183939;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0 1rem;
   }
-  if (timerLineIntervalId) {
-    clearInterval(timerLineIntervalId);
-    timerLineIntervalId = null;
+  #typing-game {
+    padding: 1.5rem 1rem;
   }
-
-  if (!allItems.length) {
-    challengeText.textContent = "No text found.";
-    input.disabled = true;
-    nextBtn.style.display = "none";
-    return;
+  header h1 {
+    font-size: 2rem;
   }
-
-  // Pick a random text item
-  currentText = allItems[Math.floor(Math.random() * allItems.length)];
-  challengeText.textContent = currentText;
-  input.value = "";
-  input.disabled = false;
-  input.focus();
-
-  // Reset stats
-  startTime = new Date();
-  totalTyped = 0;
-  correctTyped = 0;
-  typedText = "";
-  wpmStat.textContent = 0;
-  accuracyStat.textContent = 100;
-  nextBtn.style.display = "none";
-  progressBar.value = 0;
-  timerLine.style.width = "100%";
-
-  let practiceTime = parseInt(timerSelect.value);
-  if (practiceTime > 0) {
-    let secondsRemaining = practiceTime * 60;
-    // Timer countdown
-    intervalId = setInterval(() => {
-      secondsRemaining--;
-      if (secondsRemaining <= 0) {
-        clearInterval(intervalId);
-        intervalId = null;
-        input.disabled = true;
-        showPopup();
-        nextBtn.style.display = "block";
-        timerLine.style.width = "0%";
-      }
-    }, 1000);
-    startTimerLine(practiceTime * 60);
-  } else {
-    timerLine.style.width = "0%";
+  .tab-btn {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
   }
 }
 
-// Animate timer line shrinking over time
-function startTimerLine(totalSeconds) {
-  if (timerLineIntervalId) clearInterval(timerLineIntervalId);
-  let timePassed = 0;
-  timerLine.style.width = "100%";
-
-  timerLineIntervalId = setInterval(() => {
-    timePassed++;
-    let widthPercent = ((totalSeconds - timePassed) / totalSeconds) * 100;
-    if (widthPercent <= 0) {
-      timerLine.style.width = "0%";
-      clearInterval(timerLineIntervalId);
-      timerLineIntervalId = null;
-    } else {
-      timerLine.style.width = widthPercent + "%";
-    }
-  }, 1000);
+/* Starry background style if needed */
+.stars-bg {
+  background: url('https://cdn.pixabay.com/photo/2017/06/20/19/22/stellar-2421109_1280.jpg') repeat top center;
+  opacity: 0.23;
 }
-
-// Calculates Words Per Minute
-function calculateWPM() {
-  const elapsedTime = (new Date() - startTime) / 60000; // minutes
-  if (elapsedTime <= 0) return 0;
-  return Math.round(totalTyped / 5 / elapsedTime);
-}
-
-// Calculate Accuracy %
-function calculateAccuracy() {
-  if (totalTyped === 0) return 100;
-  return Math.round((correctTyped / totalTyped) * 100);
-}
-
-// Show popup with detailed stats
-function showPopup() {
-  const wpm = calculateWPM();
-  const accuracy = calculateAccuracy();
-  const timeSpentSeconds = Math.round((new Date() - startTime) / 1000);
-
-  popupStats.innerHTML = `
-    <p><strong>WPM:</strong> ${wpm}</p>
-    <p><strong>Accuracy:</strong> ${accuracy}%</p>
-    <p><strong>Time spent:</strong> ${timeSpentSeconds} seconds</p>
-    <p><strong>Typed Characters:</strong> ${totalTyped}</p>
-  `;
-
-  // Update user stats history
-  completedChallenges++;
-  statsHistory.push({ wpm, accuracy });
-
-  updateUserStats();
-
-  popupContainer.classList.remove("popup-hide");
-}
-
-// Update user stats below typing game
-function updateUserStats() {
-  const bestWPM = Math.max(...statsHistory.map(s => s.wpm), 0);
-  const avgWPM = statsHistory.length ? Math.round(statsHistory.reduce((sum, s) => sum + s.wpm, 0) / statsHistory.length) : 0;
-  const bestAccuracy = Math.max(...statsHistory.map(s => s.accuracy), 0);
-
-  document.getElementById("completed").textContent = completedChallenges;
-  document.getElementById("best-wpm").textContent = bestWPM;
-  document.getElementById("avg-wpm").textContent = avgWPM;
-  document.getElementById("best-accuracy").textContent = bestAccuracy;
-}
-
-// Updates live WPM and accuracy during typing
-function updateLiveStats() {
-  wpmStat.textContent = calculateWPM();
-  accuracyStat.textContent = calculateAccuracy();
-  // Update progress bar
-  let progressPercent = (typedText.length / currentText.length) * 100;
-  progressBar.value = progressPercent > 100 ? 100 : progressPercent;
-}
-
-// Sound play (simple beep on keypress)
-function playKeySound() {
-  if (!soundEnabled) return;
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = audioCtx.createOscillator();
-  oscillator.type = 'square';
-  oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-  oscillator.connect(audioCtx.destination);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime + 0.05); // 50ms beep
-}
-
-// Event Handling
-
-// Theme tab clicks
-themeButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    themeButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentTheme = btn.dataset.theme;
-    loadThemeItems(currentTheme);
-  });
-});
-
-// Typing input event
-input.addEventListener("input", () => {
-  typedText = input.value;
-  totalTyped++;
-
-  // Calculate correct typed chars
-  correctTyped = 0;
-  for (let i = 0; i < typedText.length; i++) {
-    if (typedText[i] === currentText[i]) correctTyped++;
-  }
-
-  updateLiveStats();
-
-  // Check if finished typing challenge
-  if (typedText === currentText) {
-    input.disabled = true;
-    nextBtn.style.display = "block";
-
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    if (timerLineIntervalId) {
-      clearInterval(timerLineIntervalId);
-      timerLineIntervalId = null;
-    }
-    timerLine.style.width = "0%";
-
-    showPopup();
-  }
-});
-
-// Enable finishing challenge early by Enter key
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    input.disabled = true;
-    nextBtn.style.display = "block";
-
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    if (timerLineIntervalId) {
-      clearInterval(timerLineIntervalId);
-      timerLineIntervalId = null;
-    }
-    timerLine.style.width = "0%";
-
-    showPopup();
-  }
-});
-
-// Next button loads new challenge
-nextBtn.addEventListener("click", () => {
-  popupContainer.classList.add("popup-hide");
-  startNewChallenge();
-});
-
-// Close popup button
-closePopup.addEventListener("click", () => {
-  popupContainer.classList.add("popup-hide");
-  input.disabled = false;
-  input.focus();
-});
-
-// Dark mode toggle functionality
-toggleDarkBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  let darkModeOn = document.body.classList.contains("dark-mode");
-  toggleDarkBtn.textContent = darkModeOn ? "☀️" : "🌙";
-});
-
-// Sound toggle functionality
-toggleSoundBtn.addEventListener("click", () => {
-  soundEnabled = !soundEnabled;
-  toggleSoundBtn.textContent = soundEnabled ? "🔊" : "🔇";
-});
-
-// Play typing sound on keydown if enabled
-input.addEventListener("keydown", () => {
-  playKeySound();
-});
-
-// CSV download of stats functionality
-downloadCsvBtn.addEventListener("click", () => {
-  if (statsHistory.length === 0) {
-    alert("No stats available to download yet!");
-    return;
-  }
-  let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += "Session,WPM,Accuracy\n";
-  statsHistory.forEach((s, idx) => {
-    csvContent += `${idx + 1},${s.wpm},${s.accuracy}\n`;
-  });
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "utyping_stats.csv");
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-});
-
-// On page ready, load initial theme
-window.addEventListener("DOMContentLoaded", () => {
-  loadThemeItems(currentTheme);
-});
