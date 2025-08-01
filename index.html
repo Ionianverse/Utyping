@@ -34,9 +34,9 @@
       </select>
     </div>
     <div class="control-buttons">
-      <button id="toggle-dark">🌙</button>
-      <button id="toggle-sound">🔊</button>
-      <button id="download-csv">⬇️ Stats</button>
+      <button id="toggle-dark" title="Toggle Dark Mode">🌙</button>
+      <button id="toggle-sound" title="Toggle Sound">🔊</button>
+      <button id="download-csv" title="Download Stats CSV">⬇️ Stats</button>
     </div>
   </div>
 
@@ -47,11 +47,12 @@
     </div>
     <div id="tier-badge">Tier</div>
     <div id="challenge-text">Loading...</div>
-    <textarea id="typing-input" placeholder="Start typing here..."></textarea>
+    <textarea id="typing-input" placeholder="Start typing here..." spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
     <div id="stats">
       <div>WPM: <span id="wpm">0</span></div>
       <div>Accuracy: <span id="accuracy">100</span>%</div>
     </div>
+    <div id="timer-line"></div>
     <button id="next-btn" style="display:none;">Next</button>
   </main>
 
