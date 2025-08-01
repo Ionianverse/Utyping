@@ -33,8 +33,6 @@ const bestAccuracyDisplay = get("best-accuracy");
 const popupContainer = get("popup-container");
 const popupStats = get("popup-stats");
 const closePopupBtn = get("close-popup");
-
-// NEW: time selection dropdown element
 const timeSelect = get('practice-time-select');
 
 let allItems = [];
@@ -48,7 +46,6 @@ let totalTyped = 0;
 let totalErrors = 0;
 let showFeedback = false;
 
-// --- Timer variables ---
 let timer = null;
 let timeLeft = 0; // seconds
 
@@ -70,7 +67,7 @@ const tiers = [
   {name: "Galactic Legend", minLevel: 60, color: "#6ff2f0"}
 ];
 
-// --- Load paragraphs function ---
+// Load paragraphs from file
 async function loadThemeItems(themeKey) {
   const theme = THEMES[themeKey];
   themeImage.innerHTML = theme.image ? `<img src="${theme.image}" alt="${theme.display}">` : "";
@@ -126,7 +123,6 @@ function showTierMessage(name, color) {
   setTimeout(() => msg.remove(), 1800);
 }
 
-// --- Timer functions ---
 function clearTimer() {
   if (timer) {
     clearInterval(timer);
@@ -141,12 +137,11 @@ function formatTime(sec) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-// Start the timer according to user selection
 function startTimer() {
-  if (timer) return; // timer already running
+  if (timer) return;
   const selectedMinutes = parseInt(timeSelect?.value || "0", 10);
   if (!selectedMinutes || selectedMinutes <= 0) {
-    levelInfo.textContent = `Level ${currentLevel}`; // reset if no timer
+    levelInfo.textContent = `Level ${currentLevel}`;
     return;
   }
   timeLeft = selectedMinutes * 60;
@@ -163,16 +158,15 @@ function startTimer() {
   }, 1000);
 }
 
-// Called when timer hits zero
 function endSessionDueToTimeout() {
   input.disabled = true;
   showFeedback = true;
-  showPopup(true); // show popup with timeout message
+  showPopup(true);
+  nextBtn.style.display = "none";
 }
 
-// --- Main game flow functions ---
 function startNewChallenge() {
-  clearTimer(); // clear timer on new challenge
+  clearTimer();
   currentParagraph = pickParagraph();
   textToTypeElement.textContent = currentParagraph;
   input.value = "";
@@ -209,12 +203,11 @@ function calculateStats() {
   return {wpm, accuracy};
 }
 
-// Check user input on each input event
 function checkInput(evt) {
   const typed = input.value;
   if (!startTime && typed.length) {
     startTime = new Date();
-    startTimer(); // START TIMER here on first key press
+    startTimer();
   }
 
   totalTyped = typed.length;
@@ -236,8 +229,11 @@ function checkInput(evt) {
   }
 }
 
-// Show popup with optional timeout flag to adjust feedback text
 function showPopup(timeout = false) {
+  if (timeout && !showFeedback) {
+    showFeedback = true;
+    nextBtn.style.display = "none";
+  }
   if (THEME_SOUNDS[currentTheme]) {
     const audio = new Audio(THEME_SOUNDS[currentTheme]);
     audio.play();
@@ -294,7 +290,6 @@ function hidePopup() {
   startNewChallenge();
 }
 
-// --- Event listeners ---
 input.addEventListener("input", checkInput);
 
 input.addEventListener("keydown", function(evt){
@@ -333,16 +328,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 function switchTheme(newTheme) {
 
   const themeParticleSettings = {
-  space: { color: "#fff", shape: ["star"], number: 80 },
-  science: { color: "#00e7cf", shape: ["circle"], number: 55 },
-  ai: { color: "#8e88f7", shape: ["edge"], number: 70 },
-  engineering: { color: "#ffd635", shape: ["polygon"], number: 40 },
-  biology: { color: "#4cf079", shape: ["circle"], number: 50 },
-  general: { color: "#767799", shape: ["circle"], number: 40 }
-};
+    space: { color: "#fff", shape: ["star"], number: 80 },
+    science: { color: "#00e7cf", shape: ["circle"], number: 55 },
+    ai: { color: "#8e88f7", shape: ["edge"], number: 70 },
+    engineering: { color: "#ffd635", shape: ["polygon"], number: 40 },
+    biology: { color: "#4cf079", shape: ["circle"], number: 50 },
+    general: { color: "#767799", shape: ["circle"], number: 40 }
+  };
 
-function switchTheme(newTheme) {
-  // ...your code...
   const settings = themeParticleSettings[newTheme] || themeParticleSettings.general;
   tsParticles.load("particles-js", {
     fullScreen: { enable: true, zIndex: 0 },
@@ -355,9 +348,7 @@ function switchTheme(newTheme) {
       move: { enable: true, speed: 0.3 }
     }
   });
-}
 
-  
   const themeBackgrounds = {
     space: "linear-gradient(135deg, #000b21 0%, #101532 100%), url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
     general: "linear-gradient(135deg, #fff9f1 0%, #e8e0ca 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') center/cover fixed",
@@ -369,6 +360,7 @@ function switchTheme(newTheme) {
   document.body.style.background = themeBackgrounds[newTheme] || "";
 }
 
+// Reset shortcut Ctrl+Shift+R
 window.addEventListener("keydown", evt => {
   if (evt.ctrlKey && evt.shiftKey && evt.key.toLowerCase() === "r") {
     localStorage.removeItem('stats_v2');
@@ -381,21 +373,8 @@ window.addEventListener("keydown", evt => {
   }
 });
 
-// Initialize
+// Initialize the app
 switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
 loadThemeItems(currentTheme);
-
-
-tsParticles.load("particles-js", {
-  fullScreen: { enable: true, zIndex: 0 },
-  particles: {
-    number: { value: 65 },
-    color: { value: "#fff" },
-    shape: { type: ["circle", "star"] },
-    opacity: { value: 0.44 },
-    size: { value: [1.2, 4], random: true },
-    move: { enable: true, speed: 0.3 }
-  }
-});
