@@ -359,3 +359,16 @@ switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
 loadThemeItems(currentTheme);
+
+
+tsParticles.load("particles-js", {
+  fullScreen: { enable: true, zIndex: 0 },
+  particles: {
+    number: { value: 65 },
+    color: { value: "#fff" },
+    shape: { type: ["circle", "star"] },
+    opacity: { value: 0.44 },
+    size: { value: [1.2, 4], random: true },
+    move: { enable: true, speed: 0.3 }
+  }
+});
