@@ -26,14 +26,12 @@ function get(id) {
   return document.getElementById(id);
 }
 
-const input = get("input");
-const referenceText = get("reference-text");
-const timerDisplay = get("timer");
+const input = get("typing-input");
+const referenceText = get("text-to-type");
 const levelInfo = get("level-info");
 const accuracyDisplay = get("accuracy");
-const speedDisplay = get("speed");
+const wpmDisplay = get("wpm");
 const timeSelect = get("practice-time-select");
-const countdownDisplay = get("countdown-display"); // new element in HTML
 
 function setLevel(level) {
   currentText = levels[level - 1];
@@ -50,6 +48,7 @@ function setLevel(level) {
   incorrect = 0;
   total = 0;
   startTime = null;
+  input.disabled = false;
   clearInterval(timer);
   timer = null;
   updateTimerDisplay();
@@ -57,19 +56,17 @@ function setLevel(level) {
 }
 
 function updateStats() {
-  accuracyDisplay.innerText = total ? ((correct / total) * 100).toFixed(1) + "%" : "100%";
+  accuracyDisplay.innerText = total ? ((correct / total) * 100).toFixed(1) : "100";
   const elapsedTime = startTime ? (new Date() - startTime) / 1000 / 60 : 0;
-  speedDisplay.innerText = elapsedTime ? Math.round((correct / 5) / elapsedTime) + " WPM" : "0 WPM";
+  wpmDisplay.innerText = elapsedTime ? Math.round((correct / 5) / elapsedTime) : "0";
 }
 
 function updateTimerDisplay() {
   const selectedMinutes = parseInt(timeSelect.value || "0", 10);
   if (selectedMinutes > 0) {
     levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(selectedMinutes * 60)}`;
-    countdownDisplay.textContent = `⏳ ${selectedMinutes} minute${selectedMinutes > 1 ? 's' : ''} selected`;
   } else {
     levelInfo.textContent = `Level ${currentLevel}`;
-    countdownDisplay.textContent = `🕓 No timer selected`;
   }
 }
 
@@ -119,10 +116,10 @@ input.addEventListener("input", () => {
     const spans = referenceText.querySelectorAll("span");
 
     if (char === expectedChar) {
-      spans[currentCharIndex].style.color = "green";
+      spans[currentCharIndex].style.color = "limegreen";
       correct++;
     } else {
-      spans[currentCharIndex].style.color = "red";
+      spans[currentCharIndex].style.color = "crimson";
       incorrect++;
     }
     total++;
@@ -137,7 +134,6 @@ input.addEventListener("input", () => {
       currentLevel++;
       setTimeout(() => {
         setLevel(currentLevel);
-        input.disabled = false;
         input.focus();
       }, 1000);
     } else {
@@ -155,5 +151,5 @@ timeSelect.addEventListener("change", () => {
   }
 });
 
-// Init
+// Init game
 setLevel(currentLevel);
