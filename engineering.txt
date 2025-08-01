@@ -1,2 +1,12 @@
 Engineers design bridges, buildings, and vehicles that connect and move the world. Every structure is carefully planned, tested, and built to solve real-life problems and improve quality of life.
 A simple lever or pulley can greatly multiply a person's strength. From ancient times to today, engineers use creative ideas to build tools and machines that make our lives easier.
+Structural engineers design buildings to withstand loads such as wind and earthquakes.
+Civil engineering involves the design and construction of infrastructure like roads and bridges.
+Thermodynamics is essential for understanding energy transfer in mechanical systems.
+Electrical circuits control the flow of electrons to power devices and machines.
+Robotics combines mechanical design with electronics and programming to automate tasks.
+Materials science studies the properties of metals, polymers, and composites.
+Software engineering focuses on developing reliable and maintainable computer programs.
+Hydraulic systems use pressurized fluid to transmit power in heavy equipment.
+Control systems maintain stability and desired performance in dynamic machines.
+Environmental engineering aims to reduce pollution and protect natural resources.
