@@ -5,33 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Utyping: Typing Adventure</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js" defer></script>
 </head>
-
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@3.3.0/tsparticles.bundle.min.js"></script>
-
 <body>
+
   <div id="particles-js"></div>
 
   <div class="stars-bg"></div>
 
   <header>
-  <!-- Animated cosmic icons at the top -->
-  <div class="animated-bg-icons">
-    <img src="https://cdn.pixabay.com/animation/2023/07/03/11/19/11-19-00-673_512.gif" alt="Planet floating" />
-    <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Spinning star" />
-  </div>
+    <!-- Animated cosmic icons at the top -->
+    <div class="animated-bg-icons">
+      <img src="https://cdn.pixabay.com/animation/2023/07/03/11/19/11-19-00-673_512.gif" alt="Planet floating" />
+      <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Spinning star" />
+    </div>
 
-  <!-- Extra animated decor for atmosphere -->
-  <div class="animated-decor">
-    <img src="https://cdn.pixabay.com/animation/2023/09/28/11/29/11-29-39-920_512.gif" alt="Spinning planet" />
-    <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Rotating star" />
-    <img src="https://media.giphy.com/media/3o6fJ9yGNtKQp2dxHK/giphy.gif" alt="Galaxy" />
-  </div>
+    <!-- Extra animated decor for atmosphere -->
+    <div class="animated-decor">
+      <img src="https://cdn.pixabay.com/animation/2023/09/28/11/29/11-29-39-920_512.gif" alt="Spinning planet" />
+      <img src="https://cdn.pixabay.com/animation/2023/06/19/13/32/13-32-47-689_512.gif" alt="Rotating star" />
+      <img src="https://media.giphy.com/media/3o6fJ9yGNtKQp2dxHK/giphy.gif" alt="Galaxy" />
+    </div>
 
-  <h1>Utyping 🚀</h1>
-  <p>Explore Typing with Space, Science, and More!</p>
-</header>
-
+    <h1>Utyping 🚀</h1>
+    <p>Explore Typing with Space, Science, and More!</p>
+  </header>
 
   <nav id="tabs" role="tablist" aria-label="Typing Themes">
     <button class="tab-btn active" data-theme="space" role="tab" aria-selected="true" tabindex="0">Universe/Space</button>
@@ -42,50 +40,38 @@
     <button class="tab-btn" data-theme="ai" role="tab" aria-selected="false" tabindex="-1">AI & Technology</button>
   </nav>
 
-
   <section id="time-selection" style="margin-bottom:1rem; text-align:center;">
-  Practice Time: 
-  <select id="practice-time-select" aria-label="Select practice duration">
-    <option value="0">No timer</option>
-    <option value="1">1 Minute</option>
-    <option value="2">2 Minutes</option>
-    <option value="5">5 Minutes</option>
-  </select>
-</section>
-<!-- Add this section just above your <section id="typing-game"> -->
-<section id="time-selection" style="margin-bottom:1rem; text-align:center;">
-  <label for="practice-time-select" style="font-weight: 600; color: #3775c6; margin-right: 0.5rem;">
-    Select Practice Time:
-  </label>
-  <select id="practice-time-select" aria-label="Select practice duration">
-    <option value="0">No timer</option>
-    <option value="1">1 Minute</option>
-    <option value="2">2 Minutes</option>
-    <option value="5">5 Minutes</option>
-  </select>
-</section>
+    <label for="practice-time-select" style="font-weight: 600; color: #3775c6; margin-right: 0.5rem;">
+      Select Practice Time:
+    </label>
+    <select id="practice-time-select" aria-label="Select practice duration">
+      <option value="0">No timer</option>
+      <option value="1">1 Minute</option>
+      <option value="2">2 Minutes</option>
+      <option value="5">5 Minutes</option>
+    </select>
+  </section>
 
-<!-- Add this div anywhere in <body>, preferably near the stars background -->
-<div class="universe-animations">
-  <!-- Example universe-themed small animations -->
-  <div class="shooting-star"></div>
-  <div class="comet"></div>
-  <div class="floating-planet"></div>
-</div>
+  <div class="universe-animations" aria-hidden="true">
+    <!-- Example universe-themed small animations -->
+    <div class="shooting-star"></div>
+    <div class="comet"></div>
+    <div class="floating-planet"></div>
+  </div>
 
   <main id="typing-game">
     <div id="theme-image" aria-label="Theme Image"></div>
 
-    <div id="tier-badge">
+    <div id="tier-badge" role="region" aria-live="polite" aria-atomic="true">
       <span id="tier">Tier</span>
     </div>
 
-    <div id="level-progress">
+    <div id="level-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Typing progress">
       <progress id="progress-bar" max="100" value="0"></progress>
       <span id="level-info">Level 1</span>
     </div>
 
-    <div id="challenge-text" aria-live="polite">
+    <div id="challenge-text" aria-live="polite" aria-atomic="true">
       <span id="text-to-type">Loading...</span>
     </div>
 
@@ -107,7 +93,7 @@
     <button id="next-btn" style="display:none;">Next Challenge</button>
   </main>
 
-  <section id="user-stats" aria-live="polite">
+  <section id="user-stats" aria-live="polite" aria-atomic="true">
     <h2>Your Typing Stats</h2>
     <div>Paragraphs Completed: <span id="completed">0</span></div>
     <div>Best WPM: <span id="best-wpm">0</span></div>
