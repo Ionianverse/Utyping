@@ -309,3 +309,7 @@ main#typing-game {
     padding: 0.5em 1em;
   }
 }
+.stars-bg {
+  background: url('https://cdn.pixabay.com/photo/2017/06/20/19/22/stellar-2421109_1280.jpg') repeat top center;
+  opacity: 0.23;
+}
