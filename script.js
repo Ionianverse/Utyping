@@ -34,10 +34,10 @@ const bestAccuracyDisplay = get("best-accuracy");
 const popupContainer = get("popup-container");
 const popupStats = get("popup-stats");
 const closePopupBtn = get("close-popup");
-const timeSelect = get('practice-time-select');
-const toggleSoundBtn = get('toggle-sound');
-const toggleDarkBtn = get('toggle-dark');
-const downloadCSVBtn = get('download-csv');
+const timeSelect = get("practice-time-select");
+const toggleSoundBtn = get("toggle-sound");
+const toggleDarkBtn = get("toggle-dark");
+const downloadCSVBtn = get("download-csv");
 
 let allItems = [];
 let currentTheme = "space";
@@ -66,16 +66,17 @@ let muteSound = false;
 let isDarkMode = false;
 
 const tiers = [
-  {name: "Mercury Novice", minLevel: 1, color: "#ffcc32"},
-  {name: "Venus Voyager", minLevel: 4, color: "#fca982"},
-  {name: "Mars Explorer", minLevel: 8, color: "#f94d56"},
-  {name: "Jupiter Captain", minLevel: 16, color: "#29b4dd"},
-  {name: "Saturn Navigator", minLevel: 25, color: "#b18dbe"},
-  {name: "Neptune Commander", minLevel: 40, color: "#8eacf3"},
-  {name: "Galactic Legend", minLevel: 60, color: "#6ff2f0"}
+  { name: "Mercury Novice", minLevel: 1, color: "#ffcc32" },
+  { name: "Venus Voyager", minLevel: 4, color: "#fca982" },
+  { name: "Mars Explorer", minLevel: 8, color: "#f94d56" },
+  { name: "Jupiter Captain", minLevel: 16, color: "#29b4dd" },
+  { name: "Saturn Navigator", minLevel: 25, color: "#b18dbe" },
+  { name: "Neptune Commander", minLevel: 40, color: "#8eacf3" },
+  { name: "Galactic Legend", minLevel: 60, color: "#6ff2f0" }
 ];
 
-// Load paragraphs from file
+// --- UTILS & INIT ---
+
 async function loadThemeItems(themeKey) {
   const theme = THEMES[themeKey];
   themeImage.innerHTML = theme.image ? `<img src="${theme.image}" alt="${theme.display}">` : "";
@@ -130,6 +131,8 @@ function showTierMessage(name, color) {
   setTimeout(() => msg.remove(), 1800);
 }
 
+// --- TIMER LOGIC WITH ROBUST HANDLING ---
+
 function clearTimer() {
   if (timer) {
     clearInterval(timer);
@@ -144,10 +147,20 @@ function formatTime(sec) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function updateTimerDisplay() {
+  const selectedMinutes = parseInt(timeSelect.value || "0", 10);
+  if (selectedMinutes > 0) {
+    levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(selectedMinutes * 60)}`;
+  } else {
+    levelInfo.textContent = `Level ${currentLevel}`;
+  }
+}
+
 function startTimer() {
-  if (timer) return;
-  const selectedMinutes = parseInt(timeSelect?.value || "0", 10);
+  clearTimer();
+  const selectedMinutes = parseInt(timeSelect.value || "0", 10);
   if (!selectedMinutes || selectedMinutes <= 0) {
+    // No timer mode
     levelInfo.textContent = `Level ${currentLevel}`;
     return;
   }
@@ -159,17 +172,14 @@ function startTimer() {
     levelInfo.textContent = `Level ${currentLevel} - Time Left: ${formatTime(timeLeft)}`;
     if (timeLeft <= 0) {
       clearTimer();
-      endSessionDueToTimeout();
+      input.disabled = true;
+      showPopup(true); // ends session on time up
+      nextBtn.style.display = "none";
     }
   }, 1000);
 }
 
-function endSessionDueToTimeout() {
-  input.disabled = true;
-  showFeedback = true;
-  showPopup(true);
-  nextBtn.style.display = "none";
-}
+// --- MAIN APP LOGIC ---
 
 function startNewChallenge() {
   clearTimer();
@@ -188,6 +198,7 @@ function startNewChallenge() {
   nextBtn.style.display = "none";
   showFeedback = false;
   popupOpen = false;
+  updateTimerDisplay();
 }
 
 function updateStatsDisplay() {
@@ -198,7 +209,7 @@ function updateStatsDisplay() {
 }
 
 function calculateStats() {
-  if (!startTime) return {wpm: 0, accuracy: 100};
+  if (!startTime) return { wpm: 0, accuracy: 100 };
   const now = new Date();
   const timeInMinutes = (now - startTime) / 1000 / 60;
   const chars = input.value.length;
@@ -207,10 +218,9 @@ function calculateStats() {
   const accuracy = chars === 0 ? 100 : Math.max(0, Math.round(((chars - totalErrors) / chars) * 100));
   wpmDisplay.textContent = isFinite(wpm) && wpm > 0 ? wpm : 0;
   accuracyDisplay.textContent = accuracy;
-  return {wpm, accuracy};
+  return { wpm, accuracy };
 }
 
-// Highlight typed errors as user types
 function drawTextWithFeedback() {
   const typed = input.value;
   let output = '';
@@ -235,7 +245,7 @@ function checkInput(evt) {
     return;
   }
   const typed = input.value;
-  // Timer starts on first input
+  // Timer starts on first user input
   if (!startTime && typed.length) {
     startTime = new Date();
     startTimer();
@@ -267,7 +277,7 @@ function showPopup(timeout = false) {
     audio.play();
   }
   clearTimer();
-  const {wpm, accuracy} = calculateStats();
+  const { wpm, accuracy } = calculateStats();
   stats.completed += 1;
   stats.totalWPM += wpm;
   stats.totalAccuracy += accuracy;
@@ -307,6 +317,7 @@ function showPopup(timeout = false) {
     }
   }
 }
+
 function hidePopup() {
   popupContainer.classList.add('popup-hide');
   document.onkeydown = null;
@@ -316,9 +327,11 @@ function hidePopup() {
   popupOpen = false;
 }
 
+// --- EVENT LISTENERS ---
+
 input.addEventListener("input", checkInput);
 
-input.addEventListener("keydown", function(evt){
+input.addEventListener("keydown", function(evt) {
   if (evt.key === "Enter") {
     evt.preventDefault();
     if (input.value === currentParagraph && !showFeedback) {
@@ -352,6 +365,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
+timeSelect.addEventListener("change", () => {
+  // If user switches timer and hasn't started typing, update display
+  updateTimerDisplay();
+  // If started typing already, timer for current challenge is not reset
+});
+
+// --- THEME, SOUND, EXTRAS ---
+
 function switchTheme(newTheme) {
   // Particles (for visual effects)
   const themeParticleSettings = {
@@ -363,17 +384,19 @@ function switchTheme(newTheme) {
     general: { color: "#767799", shape: ["circle"], number: 40 }
   };
   const settings = themeParticleSettings[newTheme] || themeParticleSettings.general;
-  tsParticles.load("particles-js", {
-    fullScreen: { enable: true, zIndex: 0 },
-    particles: {
-      number: { value: settings.number },
-      color: { value: settings.color },
-      shape: { type: settings.shape },
-      opacity: { value: 0.44 },
-      size: { value: [1.2, 4], random: true },
-      move: { enable: true, speed: 0.3 }
-    }
-  });
+  if (window.tsParticles && window.tsParticles.load) {
+    tsParticles.load("particles-js", {
+      fullScreen: { enable: true, zIndex: 0 },
+      particles: {
+        number: { value: settings.number },
+        color: { value: settings.color },
+        shape: { type: settings.shape },
+        opacity: { value: 0.44 },
+        size: { value: [1.2, 4], random: true },
+        move: { enable: true, speed: 0.3 }
+      }
+    });
+  }
 
   // Theme backgrounds (light & dark mode handled next)
   const themeBackgrounds = {
@@ -393,6 +416,7 @@ toggleDarkBtn.addEventListener('click', () => {
   isDarkMode = !isDarkMode;
   updateDarkMode();
 });
+
 function updateDarkMode() {
   if (isDarkMode) document.body.classList.add('dark-mode');
   else document.body.classList.remove('dark-mode');
@@ -428,7 +452,7 @@ function triggerShootingStar() {
 // Reset shortcut Ctrl+Shift+R: clears stats and reloads
 window.addEventListener("keydown", evt => {
   if (evt.ctrlKey && evt.shiftKey && evt.key.toLowerCase() === "r") {
-    stats = {completed: 0, totalWPM: 0, totalAccuracy: 0, bestWPM: 0, bestAccuracy: 0};
+    stats = { completed: 0, totalWPM: 0, totalAccuracy: 0, bestWPM: 0, bestAccuracy: 0 };
     updateStatsDisplay();
     currentLevel = 1;
     updateTier();
@@ -437,7 +461,7 @@ window.addEventListener("keydown", evt => {
   }
 });
 
-// App init
+// INIT
 switchTheme(currentTheme);
 updateTier();
 updateStatsDisplay();
