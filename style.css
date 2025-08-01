@@ -466,3 +466,19 @@ footer {
   0%, 100% {opacity: 0.15;}
   50% {opacity: 0.35;}
 }
+
+.animated-decor {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.animated-decor img {
+  width: 90px; height: auto; opacity: 0.8;
+  animation: float 4s ease-in-out infinite alternate;
+}
+@keyframes float {
+  0% { transform: translateY(0);}
+  100% { transform: translateY(-24px);}
+}
