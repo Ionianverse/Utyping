@@ -1,70 +1,70 @@
 # Utyping: Typing Adventure 🚀
 
-**Utyping** is a free, open-source web app for typing practice with a cosmic twist! Practice with Universe/Space, Science, General, Biology, Engineering, AI themes—all with beautifully animated visuals, timed sessions, and dynamic content.
+**Utyping** is a free, open-source web app for typing practice with a cosmic twist! Practice with Universe/Space, Science, General, Biology, Engineering, and AI themes — all featuring beautifully animated visuals, timed sessions, and dynamic content.
 
 > **🌐 Live Demo:**  
-> 👉 **[Utyping Website](https://ionianverse.github.io/Utyping/)**
+> 👉 [Utyping Website](https://ionianverse.github.io/Utyping/)
 
 ## ⭐ Features
 
 - **Multi-theme Tabs:** Universe/Space, General, Science, Biology, Engineering, AI & Technology.
-- **Easy Content Updates:** Practice material stored in plain `.txt` files—edit/add new lines with no code.
-- **Modern Visuals:** Animated planets, stars, galaxy, and themed full-page backgrounds per topic.
-- **Timed Practice:** Select duration (1, 2, 3, 5, or 10 minutes) for every round.
-- **Real-time Stats:** WPM, accuracy, and more—pop-up summary after each session.
-- **Tier/Level System:** Unlock new badges and level up as you progress.
-- **Fully Responsive:** Works great on desktop, tablet, or mobile.
-- **No Sign-in Needed:** Instant practice; no account required.
+- **Easy Content Updates:** Practice material stored in simple `.txt` files — edit or add new lines without any code changes.
+- **Modern Visuals:** Animated planets, stars, galaxies, and themed full-page backgrounds for each topic.
+- **Timed Practice:** Select durations of 1, 2, 3, 5, or 10 minutes per round.
+- **Real-time Stats:** Words per minute (WPM), accuracy, and a detailed pop-up summary after each session.
+- **Tier/Level System:** Unlock badges and level up as you progress.
+- **Fully Responsive:** Works perfectly on desktop, tablet, and mobile devices.
+- **No Sign-in Needed:** Instant practice without any account or registration.
 
 ## 🏁 Quick Start
 
 1. **Visit the Website:**  
-   👉 **[Utyping Live](https://ionianverse.github.io/Utyping/)**
+   👉 [Utyping Live](https://ionianverse.github.io/Utyping/)
 2. **Pick a Theme** from the tabs.
-3. **Select Practice Time** from the dropdown.
-4. **Start Typing!** Stats and feedback appear at the end.
+3. **Select Practice Time** from the dropdown menu.
+4. **Start Typing!** Your stats and detailed feedback appear after each session.
 
 ## 📑 How to Add New Practice Content
 
-- All practice text is in simple `.txt` files:  
+- All practice text is stored in plain `.txt` files:  
   - `space.txt`, `general.txt`, `science.txt`, `biology.txt`, `engineering.txt`, `ai.txt`
-- **Edit these files on GitHub**—one paragraph or practice line per line.  
-- **No code changes are needed** to add new content!
+- **Edit these files directly on GitHub** — each paragraph or practice line goes on a new line.
+- **No programming knowledge needed** to add or update content!
 
 ## 🛠️ Technical Overview
 
-- Pure **HTML**, **CSS**, **JavaScript**
-- **GitHub Pages** for free hosting
-- Content loaded dynamically from `.txt` files
-- Animated backgrounds, icons, and sounds per theme
-- Stats reset with each page reload (no persistent storage)
+- Built with pure **HTML**, **CSS**, and **JavaScript**.
+- Hosted for free on **GitHub Pages**.
+- Content is loaded dynamically from `.txt` files.
+- Includes animated backgrounds, sound effects, and icons tailored to each theme.
+- Stats are session-based and reset on page reload (no persistent storage).
 
 ## 🗂️ Project Structure
 
-| File Name      | Purpose                                      |
-|----------------|----------------------------------------------|
-| `index.html`   | Main website file                            |
-| `style.css`    | All styles and layout                        |
-| `script.js`    | Theme/typing/timer/stat logic                |
-| `space.txt`    | Space/Universe paragraphs and lines          |
-| `general.txt`  | General typing practice content              |
-| `science.txt`  | Science typing practice content              |
-| `biology.txt`  | Biology themed typing content                |
-| `engineering.txt` | Engineering themed typing content         |
-| `ai.txt`       | AI & Technology typing content               |
-| `README.md`    | Project documentation (this file)            |
+| File Name          | Purpose                                      |
+| ------------------ | ---------------------------------------------|
+| `index.html`       | Main website HTML file                        |
+| `style.css`        | Styles and layout                             |
+| `script.js`        | Core logic (themes, typing, timer, stats)    |
+| `space.txt`        | Universe/Space paragraphs                      |
+| `general.txt`      | General typing practice content                |
+| `science.txt`      | Science themed typing content                   |
+| `biology.txt`      | Biology paragraphs                              |
+| `engineering.txt`  | Engineering themed typing content               |
+| `ai.txt`           | AI & Technology paragraphs                      |
+| `README.md`        | Project documentation (this file)               |
 
 ## 📜 License
 
-**GPL-3.0**  
-Free for learning, personal, and classroom use.
+**GPL-3.0** — Free for learning, personal, and classroom use.
 
 ## 🤝 Contributing
 
-- Open an issue or pull request any time—new themes and content are especially welcome!
+- Feel free to open issues or submit pull requests at any time.  
+- Contributions of new themes, content, animations, and enhancements are especially welcome!
+
+---
 
 **Enjoy your universe of typing! 🚀🌟**
 
-> **Tip:**  
-> GitHub will automatically show headings, bullets, and tables with correct formatting.  
-> For best results, always use the “Preview” tab when editing to see the final look before committing.
+**BigBang**
